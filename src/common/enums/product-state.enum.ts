@@ -1,0 +1,5 @@
+export enum PRODUCT_STATE_ENUM {
+  ESPERA = 'ESPERA',
+  PREPARANDO = 'PREPARANDO',
+  LISTO = 'LISTO',
+}
