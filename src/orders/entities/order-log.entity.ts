@@ -16,9 +16,7 @@ export class OrderLog {
 
   @Column({
     name: 'product_price',
-    type: 'numeric',
-    precision: 4,
-    scale: 2,
+    type: 'float4',
   })
   productPrice: number;
 

@@ -19,9 +19,7 @@ export class Invoice {
 
   @Column({
     name: 'total',
-    type: 'numeric',
-    precision: 6,
-    scale: 2,
+    type: 'float4',
   })
   total: number;
 

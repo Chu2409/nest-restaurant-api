@@ -10,7 +10,6 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  Timestamp,
 } from 'typeorm';
 
 @Entity('visits')
@@ -22,16 +21,16 @@ export class Visit {
 
   @Column({
     name: 'entry',
-    type: 'timestamp without time zone',
+    type: 'timestamp',
   })
-  entry: Timestamp;
+  entry: Date;
 
   @Column({
     name: 'exit',
-    type: 'timestamp without time zone',
+    type: 'timestamp',
     nullable: true,
   })
-  exit?: Timestamp;
+  exit?: Date;
 
   @ManyToOne(() => Customer, (customer) => customer.visits, {
     nullable: true,

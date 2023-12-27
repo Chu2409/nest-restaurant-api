@@ -36,4 +36,3 @@ lerna-debug.log*
 
 postgres/
 .env
-db-script.sql

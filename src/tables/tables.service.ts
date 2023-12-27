@@ -1,26 +1,57 @@
-import { Injectable } from '@nestjs/common';
-import { CreateTableDto } from './dto/create-table.dto';
-import { UpdateTableDto } from './dto/update-table.dto';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Table } from './entities/table.entity';
 
 @Injectable()
 export class TablesService {
-  create(createTableDto: CreateTableDto) {
-    return 'This action adds a new table';
+  constructor(
+    @InjectRepository(Table)
+    private readonly tableRepository: Repository<Table>,
+  ) {}
+
+  async findAll() {
+    return await this.tableRepository.find({});
   }
 
-  findAll() {
-    return `This action returns all tables`;
+  async findAllAvailable() {
+    const tables = await this.findAll();
+    return tables.filter((table) => table.availability);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} table`;
+  async findOne(id: number) {
+    const table = await this.tableRepository.findOneBy({ id });
+
+    if (!table) {
+      throw new NotFoundException(`Table with id ${id} not found`);
+    }
+
+    return table;
   }
 
-  update(id: number, updateTableDto: UpdateTableDto) {
-    return `This action updates a #${id} table`;
+  async takeTable(id: number) {
+    const table = await this.findOne(id);
+
+    if (!table.availability) {
+      throw new BadRequestException(`Table with id ${id} is not available`);
+    }
+
+    table.availability = false;
+    return await this.tableRepository.save(table);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} table`;
+  async releaseTable(id: number) {
+    const table = await this.findOne(id);
+
+    if (table.availability) {
+      throw new BadRequestException(`Table with id ${id} is already empty`);
+    }
+
+    table.availability = true;
+    return await this.tableRepository.save(table);
   }
 }
