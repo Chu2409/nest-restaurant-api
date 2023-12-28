@@ -1,4 +1,3 @@
-import { Customer } from '../../customers/entities/customer.entity';
 import { Invoice } from '../../invoices/entities/invoice.entity';
 import { Order } from '../../orders/entities/order.entity';
 import { UnitOrder } from '../../orders/entities/unit-order.entity';
@@ -31,14 +30,6 @@ export class Visit {
     nullable: true,
   })
   exit?: Date;
-
-  @ManyToOne(() => Customer, (customer) => customer.visits, {
-    nullable: true,
-  })
-  @JoinColumn({
-    name: 'customer_id',
-  })
-  customer?: Customer;
 
   @ManyToOne(() => Table, (table) => table.visits, {
     nullable: false,

@@ -1,4 +1,4 @@
-import { Visit } from '../../visits/entities/visit.entity';
+import { Invoice } from '../../invoices/entities/invoice.entity';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity('customers')
@@ -63,6 +63,6 @@ export class Customer {
   })
   address?: string;
 
-  @OneToMany(() => Visit, (visit) => visit.customer)
-  visits: Visit[];
+  @OneToMany(() => Invoice, (invoice) => invoice.customer)
+  invoices: Invoice[];
 }

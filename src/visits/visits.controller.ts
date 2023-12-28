@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { VisitsService } from './visits.service';
 import { CreateVisitDto } from './dto/create-visit.dto';
-import { EndVisitDto } from './dto/end-visit.dto';
 
 @Controller('visits')
 export class VisitsController {
@@ -31,10 +30,7 @@ export class VisitsController {
   }
 
   @Patch(':id')
-  endVisit(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() endVisitDto: EndVisitDto,
-  ) {
-    return this.visitsService.endVisit(id, endVisitDto);
+  endVisit(@Param('id', ParseIntPipe) id: number) {
+    return this.visitsService.endVisit(id);
   }
 }

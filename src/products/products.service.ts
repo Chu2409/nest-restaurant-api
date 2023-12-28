@@ -8,10 +8,10 @@ import { Repository } from 'typeorm';
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
-    private productsRepository: Repository<Product>,
+    private readonly productsRepository: Repository<Product>,
 
     @InjectRepository(Category)
-    private categoriesRepository: Repository<Category>,
+    private readonly categoriesRepository: Repository<Category>,
   ) {}
 
   async findAllWithCategories() {

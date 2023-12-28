@@ -16,14 +16,6 @@ export class UnitOrder {
   })
   id: number;
 
-  @ManyToOne(() => Product, (product) => product.orders, {
-    nullable: false,
-  })
-  @JoinColumn({
-    name: 'product_id',
-  })
-  product: Product;
-
   @Column({
     name: 'product_state',
     type: 'enum',
@@ -31,6 +23,14 @@ export class UnitOrder {
     default: PRODUCT_STATE_ENUM.ESPERA,
   })
   productState: PRODUCT_STATE_ENUM;
+
+  @ManyToOne(() => Product, (product) => product.orders, {
+    nullable: false,
+  })
+  @JoinColumn({
+    name: 'product_id',
+  })
+  product: Product;
 
   @ManyToOne(() => Visit, (visit) => visit.unitOrders, { nullable: false })
   @JoinColumn({

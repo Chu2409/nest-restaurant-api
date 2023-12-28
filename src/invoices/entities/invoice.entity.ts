@@ -1,4 +1,4 @@
-import { PAYMENT_METHOD_ENUM } from 'src/common/enums/payment-method.enum';
+import { PAYMENT_METHOD_ENUM } from '../../common/enums/payment-method.enum';
 import { INVOICE_STATE_ENUM } from '../../common/enums/invoice-state.enum';
 import { Employee } from '../../employees/entities/employee.entity';
 import { Visit } from '../../visits/entities/visit.entity';
@@ -9,6 +9,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Customer } from 'src/customers/entities/customer.entity';
 
 @Entity('invoices')
 export class Invoice {
@@ -52,4 +53,12 @@ export class Invoice {
     name: 'visit_id',
   })
   visit: Visit;
+
+  @ManyToOne(() => Customer, (customer) => customer.invoices, {
+    nullable: true,
+  })
+  @JoinColumn({
+    name: 'customer_id',
+  })
+  customer?: Customer;
 }
