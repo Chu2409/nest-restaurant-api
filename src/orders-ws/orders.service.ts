@@ -79,8 +79,14 @@ export class OrdersService {
       .getMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  async findOneActiveByTableId(id: number) {
+    const qb = this.dataSource.createQueryBuilder(Order, 'order');
+    return qb
+      .leftJoinAndSelect('order.visit', 'visit')
+      .leftJoinAndSelect('order.product', 'product')
+      .where('visit.exit IS NULL')
+      .andWhere('visit.tableId = :id', { id })
+      .getMany();
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {
@@ -94,7 +100,7 @@ export class OrdersService {
   private handleExceptions(error: any) {
     if (error.code === '23503') throw new BadRequestException(error.detail);
 
-    console.log(error);
+    // console.log(error);
     throw new InternalServerErrorException('Unexpected error creating product');
   }
 
