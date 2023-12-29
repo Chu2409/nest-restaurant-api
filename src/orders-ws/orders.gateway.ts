@@ -11,6 +11,7 @@ import { Catch, HttpException, UseFilters } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { VisitsGateway } from 'src/visits-ws/visits.gateway';
+import { ChangeProductOrderStatusDto } from './dto/change-product-order-status.dto';
 
 @Catch(WsException, HttpException)
 class WsAndHttpExceptionFilter {
@@ -50,6 +51,29 @@ export class OrdersGateway {
     } catch (error) {
       if (!order)
         client.emit('order-response', { message: error.response.message });
+    }
+  }
+
+  @UseFilters(WsAndHttpExceptionFilter)
+  @SubscribeMessage('change-status-unit-order')
+  async changeStatusUnitOrder(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() changeProductOrderStatusDto: ChangeProductOrderStatusDto,
+  ) {
+    let order;
+    try {
+      order = await this.ordersService.changeStatusUnitOrder(
+        changeProductOrderStatusDto,
+      );
+      client.emit('change-status-unit-order-response', order);
+
+      this.visitsGateaway.findWithOrders();
+      this.visitsGateaway.findWithUnitOrders();
+    } catch (error) {
+      if (!order)
+        client.emit('change-status-unit-order-response', {
+          message: error.response.message,
+        });
     }
   }
 }

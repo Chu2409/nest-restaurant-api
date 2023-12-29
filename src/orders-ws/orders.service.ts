@@ -9,6 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Order } from './entities/order.entity';
 import { UnitOrder } from './entities/unit-order.entity';
+import { ChangeProductOrderStatusDto } from './dto/change-product-order-status.dto';
+import { PRODUCT_STATE_ENUM } from 'src/common/enums/product-state.enum';
 
 @Injectable()
 export class OrdersService {
@@ -70,7 +72,21 @@ export class OrdersService {
     }
   }
 
-  async changeStatus(id: number, status: string) {}
+  async changeStatusUnitOrder(changeStatusDto: ChangeProductOrderStatusDto) {
+    const unitOrder = await this.unitOrdersRepository.findOneBy({
+      product: { id: changeStatusDto.productId },
+      visit: { id: changeStatusDto.visitId },
+      productState: PRODUCT_STATE_ENUM.PREPARANDO,
+    });
+
+    if (!unitOrder) throw new BadRequestException('Unit order not found');
+
+    unitOrder.productState = PRODUCT_STATE_ENUM.LISTO;
+
+    await this.unitOrdersRepository.save(unitOrder);
+
+    return { message: 'Unit order status changed successfully' };
+  }
 
   // async findAllActive() {
   //   const qb = this.dataSource.createQueryBuilder(Order, 'order');

@@ -82,11 +82,11 @@ export class VisitsService {
 
   async createVisit(createVisitDto: CreateVisitDto) {
     await this.tablesService.takeTable(createVisitDto.tableId);
-    await this.visitRepository.save({
+    const visit = await this.visitRepository.save({
       table: { id: createVisitDto.tableId },
       entry: new Date(),
     });
-    return { message: 'Visit created successfully' };
+    return { visitId: visit.id, message: 'Visit created successfully' };
   }
 
   async endVisit(id: number) {
