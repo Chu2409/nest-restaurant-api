@@ -48,13 +48,12 @@ export class VisitsService {
       .getOne();
   }
 
-  async findWithUnitOrdersPreparing() {
+  async findWithUnitOrders() {
     const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
     return await qb
       .leftJoinAndSelect('visit.unitOrders', 'unitOrder')
       .leftJoinAndSelect('unitOrder.product', 'product')
-      .where("unitOrder.productState = 'PREPARANDO'")
-      .andWhere('visit.exit IS NULL')
+      .where('visit.exit IS NULL')
       .getMany();
   }
 

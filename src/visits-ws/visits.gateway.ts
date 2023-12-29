@@ -57,7 +57,7 @@ export class VisitsGateway {
 
   @SubscribeMessage('get-visits-with-unit-orders')
   async findWithUnitOrders() {
-    const visits = await this.visitsService.findWithUnitOrdersPreparing();
+    const visits = await this.visitsService.findWithUnitOrders();
     this.wss.emit('load-visits-with-unit-orders', visits);
   }
 
