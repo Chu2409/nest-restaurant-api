@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Order } from './entities/order.entity';
 import { UnitOrder } from './entities/unit-order.entity';
+import { Visit } from 'src/visits/entities/visit.entity';
 
 @Injectable()
 export class OrdersService {
@@ -22,14 +23,13 @@ export class OrdersService {
     private readonly dataSource: DataSource,
   ) {}
 
-  private queryRunner = this.dataSource.createQueryRunner();
-
   async create(createOrderDto: CreateOrderDto) {
     const { products, visitId } = createOrderDto;
 
-    await this.queryRunner.connect();
-    await this.queryRunner.startTransaction();
-    const queryBuilder = this.queryRunner.manager.createQueryBuilder();
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    const queryBuilder = queryRunner.manager.createQueryBuilder();
 
     try {
       await queryBuilder
@@ -60,21 +60,24 @@ export class OrdersService {
         )
         .execute();
 
-      await this.queryRunner.commitTransaction();
+      await queryRunner.commitTransaction();
 
       return { message: 'Order created successfully' };
     } catch (error) {
-      await this.queryRunner.rollbackTransaction();
+      await queryRunner.rollbackTransaction();
       this.handleExceptions(error);
     } finally {
-      await this.queryRunner.release();
+      await queryRunner.release();
     }
   }
 
-  async findAll() {
-    return await this.ordersRepository.find({
-      relations: ['product', 'visit'],
-    });
+  async findAllActive() {
+    const qb = this.dataSource.createQueryBuilder(Order, 'order');
+    return qb
+      .leftJoinAndSelect('order.visit', 'visit')
+      .leftJoinAndSelect('order.product', 'product')
+      .where('visit.exit IS NULL')
+      .getMany();
   }
 
   findOne(id: number) {
@@ -103,7 +106,7 @@ export class OrdersService {
     products.forEach((product) => {
       for (let i = 0; i < product.quantity; i++) {
         unitOrders.push({
-          productId: 2,
+          productId: product.productId,
         });
       }
     });

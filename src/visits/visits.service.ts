@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CreateVisitDto } from './dto/create-visit.dto';
 import { Visit } from './entities/visit.entity';
 import { TablesService } from '../tables/tables.service';
@@ -12,6 +12,7 @@ export class VisitsService {
     private readonly visitRepository: Repository<Visit>,
 
     private readonly tablesService: TablesService,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(createVisitDto: CreateVisitDto) {
@@ -27,6 +28,20 @@ export class VisitsService {
     return await this.visitRepository.find({
       relations: ['table'],
     });
+  }
+
+  async findAllActive() {
+    const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
+    return await qb.where('visit.exit IS NULL').getMany();
+  }
+
+  async findWithOrders() {
+    const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
+    return await qb
+      .leftJoinAndSelect('visit.orders', 'order')
+      .leftJoinAndSelect('order.product', 'product')
+      .where('visit.exit IS NULL')
+      .getMany();
   }
 
   async findOne(id: number) {

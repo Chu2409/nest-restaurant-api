@@ -20,9 +20,9 @@ export class OrdersController {
     return this.ordersService.create(createOrderDto);
   }
 
-  @Get()
-  findAll() {
-    return this.ordersService.findAll();
+  @Get('active')
+  findAllActive() {
+    return this.ordersService.findAllActive();
   }
 
   @Get(':id')

@@ -24,6 +24,16 @@ export class VisitsController {
     return this.visitsService.findAll();
   }
 
+  @Get('active')
+  findAllActive() {
+    return this.visitsService.findAllActive();
+  }
+
+  @Get('orders')
+  findWithOrders() {
+    return this.visitsService.findWithOrders();
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.visitsService.findOne(id);
