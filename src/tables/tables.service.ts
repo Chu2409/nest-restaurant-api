@@ -54,6 +54,8 @@ export class TablesService {
     }
 
     table.availability = true;
-    return await this.tableRepository.save(table);
+    await this.tableRepository.save(table);
+
+    return { message: 'Table released successfully' };
   }
 }

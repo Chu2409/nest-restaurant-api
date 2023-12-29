@@ -29,6 +29,12 @@ export class TablesWsGateway {
 
   constructor(private readonly tablesWsService: TablesWsService) {}
 
+  @SubscribeMessage('get-tables')
+  async getTables() {
+    const tables = await this.tablesWsService.getTables();
+    this.wss.emit('load-tables', tables);
+  }
+
   @UseFilters(WsAndHttpExceptionFilter)
   @SubscribeMessage('take-table')
   async takeTable(
@@ -38,18 +44,30 @@ export class TablesWsGateway {
     let table;
     try {
       table = await this.tablesWsService.takeTable(tableId);
-      client.emit('take-table-response', table);
+      client.emit('table-response', table);
 
       this.getTables();
     } catch (error) {
       if (!table)
-        client.emit('take-table-response', { message: error.response.message });
+        client.emit('table-response', { message: error.response.message });
     }
   }
 
-  @SubscribeMessage('get-tables')
-  async getTables() {
-    const tables = await this.tablesWsService.getTables();
-    this.wss.emit('load-tables', tables);
+  @UseFilters(WsAndHttpExceptionFilter)
+  @SubscribeMessage('release-table')
+  async releaseTable(
+    @ConnectedSocket() client: Socket,
+    @MessageBody('tableId', ParseIntPipe) tableId: number,
+  ) {
+    let table;
+    try {
+      table = await this.tablesWsService.releaseTable(tableId);
+      client.emit('table-response', table);
+
+      this.getTables();
+    } catch (error) {
+      if (!table)
+        client.emit('table-response', { message: error.response.message });
+    }
   }
 }

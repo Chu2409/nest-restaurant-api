@@ -5,11 +5,15 @@ import { TablesService } from 'src/tables/tables.service';
 export class TablesWsService {
   constructor(private readonly tablesService: TablesService) {}
 
+  async getTables() {
+    return await this.tablesService.findAll();
+  }
+
   async takeTable(tableId: number) {
     return await this.tablesService.takeTable(tableId);
   }
 
-  async getTables() {
-    return await this.tablesService.findAll();
+  async releaseTable(tableId: number) {
+    return await this.tablesService.releaseTable(tableId);
   }
 }
