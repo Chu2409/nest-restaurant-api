@@ -1,6 +1,6 @@
 import { PRODUCT_STATE_ENUM } from '../../common/enums/product-state.enum';
 import { Product } from '../../products/entities/product.entity';
-import { Visit } from '../../visits/entities/visit.entity';
+import { Visit } from '../../visits-ws/entities/visit.entity';
 import {
   Column,
   Entity,

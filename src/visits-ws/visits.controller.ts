@@ -16,7 +16,7 @@ export class VisitsController {
 
   @Post()
   create(@Body() createVisitDto: CreateVisitDto) {
-    return this.visitsService.create(createVisitDto);
+    return this.visitsService.createVisit(createVisitDto);
   }
 
   @Get()

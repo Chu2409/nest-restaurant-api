@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomersModule } from './customers/customers.module';
 import { TablesModule } from './tables-ws/tables.module';
-import { VisitsModule } from './visits/visits.module';
+import { VisitsModule } from './visits-ws/visits.module';
 import { OrdersModule } from './orders/orders.module';
 import { ProductsModule } from './products/products.module';
 import { CommonModule } from './common/common.module';

@@ -1,4 +1,4 @@
-import { Visit } from '../../visits/entities/visit.entity';
+import { Visit } from '../../visits-ws/entities/visit.entity';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity('tables')

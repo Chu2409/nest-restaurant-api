@@ -9,6 +9,6 @@ import { TablesController } from './tables.controller';
   controllers: [TablesController],
   providers: [TablesGateway, TablesService],
   imports: [TypeOrmModule.forFeature([Table])],
-  exports: [TablesService],
+  exports: [TablesService, TablesGateway],
 })
 export class TablesModule {}

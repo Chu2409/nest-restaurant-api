@@ -1,7 +1,7 @@
 import { PAYMENT_METHOD_ENUM } from '../../common/enums/payment-method.enum';
 import { INVOICE_STATE_ENUM } from '../../common/enums/invoice-state.enum';
 import { Employee } from '../../employees/entities/employee.entity';
-import { Visit } from '../../visits/entities/visit.entity';
+import { Visit } from '../../visits-ws/entities/visit.entity';
 import {
   Column,
   Entity,

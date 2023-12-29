@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { CreateVisitDto } from './dto/create-visit.dto';
@@ -15,7 +19,7 @@ export class VisitsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async create(createVisitDto: CreateVisitDto) {
+  async createVisit(createVisitDto: CreateVisitDto) {
     await this.tablesService.takeTable(createVisitDto.tableId);
     await this.visitRepository.save({
       table: { id: createVisitDto.tableId },
@@ -63,6 +67,10 @@ export class VisitsService {
       throw new NotFoundException(`Visit with id ${id} not found`);
     }
 
+    if (visit.exit) {
+      throw new BadRequestException(`Visit with id ${id} is already ended`);
+    }
+
     visit = await this.visitRepository.save({
       ...visit,
       exit: new Date(),
@@ -70,6 +78,6 @@ export class VisitsService {
 
     await this.tablesService.releaseTable(visit.table.id);
 
-    return visit;
+    return { message: 'Visit ended successfully' };
   }
 }
