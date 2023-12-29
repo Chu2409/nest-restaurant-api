@@ -20,7 +20,7 @@ export class UnitOrder {
     name: 'product_state',
     type: 'enum',
     enum: PRODUCT_STATE_ENUM,
-    default: PRODUCT_STATE_ENUM.ESPERA,
+    default: PRODUCT_STATE_ENUM.PREPARANDO,
   })
   productState: PRODUCT_STATE_ENUM;
 

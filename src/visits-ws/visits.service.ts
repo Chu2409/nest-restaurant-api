@@ -39,6 +39,15 @@ export class VisitsService {
       .getMany();
   }
 
+  async findOneWithOrders(id: number) {
+    const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
+    return await qb
+      .leftJoinAndSelect('visit.orders', 'order')
+      .leftJoinAndSelect('order.product', 'product')
+      .where('visit.id = :id', { id })
+      .getOne();
+  }
+
   async findWithUnitOrders() {
     const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
     return await qb
@@ -46,6 +55,15 @@ export class VisitsService {
       .leftJoinAndSelect('unitOrder.product', 'product')
       .where('visit.exit IS NULL')
       .getMany();
+  }
+
+  async findOneWithUnitOrders(id: number) {
+    const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
+    return await qb
+      .leftJoinAndSelect('visit.unitOrders', 'unitOrder')
+      .leftJoinAndSelect('unitOrder.product', 'product')
+      .where('visit.id = :id', { id })
+      .getOne();
   }
 
   async findOne(id: number) {
@@ -63,11 +81,11 @@ export class VisitsService {
 
   async createVisit(createVisitDto: CreateVisitDto) {
     await this.tablesService.takeTable(createVisitDto.tableId);
-    await this.visitRepository.save({
+    const visit = await this.visitRepository.save({
       table: { id: createVisitDto.tableId },
       entry: new Date(),
     });
-    return { message: 'Visit created successfully' };
+    return { visitId: visit.id, message: 'Visit created successfully' };
   }
 
   async endVisit(id: number) {

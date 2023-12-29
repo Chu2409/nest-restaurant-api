@@ -26,7 +26,7 @@ export class CreateOrderDto {
   products: ProductOrderDto[];
 }
 
-class ProductOrderDto {
+export class ProductOrderDto {
   @IsNumber()
   @IsInt()
   @IsPositive()
