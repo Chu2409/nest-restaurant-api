@@ -6,7 +6,7 @@ import {
   WebSocketServer,
   WsException,
 } from '@nestjs/websockets';
-import { TablesWsService } from './tables-ws.service';
+import { TablesService } from './tables.service';
 import { Server, Socket } from 'socket.io';
 import { Catch, HttpException, ParseIntPipe, UseFilters } from '@nestjs/common';
 
@@ -23,15 +23,15 @@ class WsAndHttpExceptionFilter {
 }
 
 @WebSocketGateway({ cors: true })
-export class TablesWsGateway {
+export class TablesGateway {
   @WebSocketServer()
   wss: Server;
 
-  constructor(private readonly tablesWsService: TablesWsService) {}
+  constructor(private readonly tablesService: TablesService) {}
 
   @SubscribeMessage('get-tables')
   async getTables() {
-    const tables = await this.tablesWsService.getTables();
+    const tables = await this.tablesService.findAll();
     this.wss.emit('load-tables', tables);
   }
 
@@ -43,7 +43,7 @@ export class TablesWsGateway {
   ) {
     let table;
     try {
-      table = await this.tablesWsService.takeTable(tableId);
+      table = await this.tablesService.takeTable(tableId);
       client.emit('table-response', table);
 
       this.getTables();
@@ -61,7 +61,7 @@ export class TablesWsGateway {
   ) {
     let table;
     try {
-      table = await this.tablesWsService.releaseTable(tableId);
+      table = await this.tablesService.releaseTable(tableId);
       client.emit('table-response', table);
 
       this.getTables();

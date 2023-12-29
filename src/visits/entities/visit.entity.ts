@@ -1,7 +1,7 @@
 import { Invoice } from '../../invoices/entities/invoice.entity';
 import { Order } from '../../orders/entities/order.entity';
 import { UnitOrder } from '../../orders/entities/unit-order.entity';
-import { Table } from '../../tables/entities/table.entity';
+import { Table } from 'src/tables-ws/entities/table.entity';
 import {
   Column,
   Entity,

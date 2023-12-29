@@ -4,18 +4,18 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { Table } from './entities/table.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TablesService {
   constructor(
     @InjectRepository(Table)
-    private readonly tableRepository: Repository<Table>,
+    private readonly tablesRepository: Repository<Table>,
   ) {}
 
   async findAll() {
-    return await this.tableRepository.find({});
+    return await this.tablesRepository.find({});
   }
 
   async findAllAvailable() {
@@ -24,7 +24,7 @@ export class TablesService {
   }
 
   async findOne(id: number) {
-    const table = await this.tableRepository.findOneBy({ id });
+    const table = await this.tablesRepository.findOneBy({ id });
 
     if (!table) {
       throw new NotFoundException(`Table with id ${id} not found`);
@@ -41,7 +41,7 @@ export class TablesService {
     }
 
     table.availability = false;
-    await this.tableRepository.save(table);
+    await this.tablesRepository.save(table);
 
     return { message: 'Table taken successfully' };
   }
@@ -54,7 +54,7 @@ export class TablesService {
     }
 
     table.availability = true;
-    await this.tableRepository.save(table);
+    await this.tablesRepository.save(table);
 
     return { message: 'Table released successfully' };
   }

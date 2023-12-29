@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { VisitsService } from './visits.service';
 import { VisitsController } from './visits.controller';
 import { Visit } from './entities/visit.entity';
-import { TablesModule } from '../tables/tables.module';
+import { TablesModule } from 'src/tables-ws/tables.module';
 
 @Module({
   controllers: [VisitsController],

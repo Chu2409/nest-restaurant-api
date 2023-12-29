@@ -9,7 +9,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Order } from './entities/order.entity';
 import { UnitOrder } from './entities/unit-order.entity';
-import { Visit } from 'src/visits/entities/visit.entity';
 
 @Injectable()
 export class OrdersService {
