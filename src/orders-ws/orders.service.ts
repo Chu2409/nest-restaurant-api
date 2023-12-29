@@ -70,32 +70,34 @@ export class OrdersService {
     }
   }
 
-  async findAllActive() {
-    const qb = this.dataSource.createQueryBuilder(Order, 'order');
-    return qb
-      .leftJoinAndSelect('order.visit', 'visit')
-      .leftJoinAndSelect('order.product', 'product')
-      .where('visit.exit IS NULL')
-      .getMany();
-  }
+  async changeStatus(id: number, status: string) {}
 
-  async findOneActiveByTableId(id: number) {
-    const qb = this.dataSource.createQueryBuilder(Order, 'order');
-    return qb
-      .leftJoinAndSelect('order.visit', 'visit')
-      .leftJoinAndSelect('order.product', 'product')
-      .where('visit.exit IS NULL')
-      .andWhere('visit.tableId = :id', { id })
-      .getMany();
-  }
+  // async findAllActive() {
+  //   const qb = this.dataSource.createQueryBuilder(Order, 'order');
+  //   return qb
+  //     .leftJoinAndSelect('order.visit', 'visit')
+  //     .leftJoinAndSelect('order.product', 'product')
+  //     .where('visit.exit IS NULL')
+  //     .getMany();
+  // }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
-  }
+  // async findOneActiveByTableId(id: number) {
+  //   const qb = this.dataSource.createQueryBuilder(Order, 'order');
+  //   return qb
+  //     .leftJoinAndSelect('order.visit', 'visit')
+  //     .leftJoinAndSelect('order.product', 'product')
+  //     .where('visit.exit IS NULL')
+  //     .andWhere('visit.tableId = :id', { id })
+  //     .getMany();
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} order`;
-  }
+  // update(updateOrderDto: UpdateOrderDto) {
+  //   return `This action updates a #${id} order`;
+  // }
+
+  // remove(id: number) {
+  //   return `This action removes a #${id} order`;
+  // }
 
   private handleExceptions(error: any) {
     if (error.code === '23503') throw new BadRequestException(error.detail);

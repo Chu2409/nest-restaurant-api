@@ -46,11 +46,29 @@ export class VisitsGateway {
     this.wss.emit('load-visits-with-orders', visits);
   }
 
+  // @SubscribeMessage('get-one-visit-with-orders')
+  // async findOneWithOrders(
+  //   @ConnectedSocket() client: Socket,
+  //   @MessageBody('id') id: number,
+  // ) {
+  //   const visits = await this.visitsService.findOneWithOrders(id);
+  //   client.emit('load-visits-with-orders', visits);
+  // }
+
   @SubscribeMessage('get-visits-with-unit-orders')
   async findWithUnitOrders() {
-    const visits = await this.visitsService.findWithUnitOrders();
+    const visits = await this.visitsService.findWithUnitOrdersPreparing();
     this.wss.emit('load-visits-with-unit-orders', visits);
   }
+
+  // @SubscribeMessage('get-one-visit-with-unit-orders')
+  // async findOneWithUnitOrders(
+  //   @ConnectedSocket() client: Socket,
+  //   @MessageBody('id') id: number,
+  // ) {
+  //   const visits = await this.visitsService.findOneWithUnitOrders(id);
+  //   client.emit('load-visits-with-unit-orders', visits);
+  // }
 
   @UseFilters(WsAndHttpExceptionFilter)
   @SubscribeMessage('create-visit')

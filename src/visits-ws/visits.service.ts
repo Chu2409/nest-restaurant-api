@@ -39,13 +39,32 @@ export class VisitsService {
       .getMany();
   }
 
-  async findWithUnitOrders() {
+  async findOneWithOrders(id: number) {
+    const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
+    return await qb
+      .leftJoinAndSelect('visit.orders', 'order')
+      .leftJoinAndSelect('order.product', 'product')
+      .where('visit.id = :id', { id })
+      .getOne();
+  }
+
+  async findWithUnitOrdersPreparing() {
     const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
     return await qb
       .leftJoinAndSelect('visit.unitOrders', 'unitOrder')
       .leftJoinAndSelect('unitOrder.product', 'product')
-      .where('visit.exit IS NULL')
+      .where("unitOrder.productState = 'PREPARANDO'")
+      .andWhere('visit.exit IS NULL')
       .getMany();
+  }
+
+  async findOneWithUnitOrders(id: number) {
+    const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
+    return await qb
+      .leftJoinAndSelect('visit.unitOrders', 'unitOrder')
+      .leftJoinAndSelect('unitOrder.product', 'product')
+      .where('visit.id = :id', { id })
+      .getOne();
   }
 
   async findOne(id: number) {
