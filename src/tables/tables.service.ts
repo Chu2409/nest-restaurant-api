@@ -41,7 +41,9 @@ export class TablesService {
     }
 
     table.availability = false;
-    return await this.tableRepository.save(table);
+    await this.tableRepository.save(table);
+
+    return { message: 'Table taken successfully' };
   }
 
   async releaseTable(id: number) {

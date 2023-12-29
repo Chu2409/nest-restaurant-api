@@ -9,6 +9,7 @@ import { ProductsModule } from './products/products.module';
 import { CommonModule } from './common/common.module';
 import { EmployeesModule } from './employees/employees.module';
 import { InvoicesModule } from './invoices/invoices.module';
+import { TablesWsModule } from './tables-ws/tables-ws.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { InvoicesModule } from './invoices/invoices.module';
     CommonModule,
     EmployeesModule,
     InvoicesModule,
+    TablesWsModule,
   ],
 })
 export class AppModule {}
