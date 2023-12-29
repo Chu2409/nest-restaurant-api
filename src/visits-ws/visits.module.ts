@@ -10,5 +10,6 @@ import { VisitsGateway } from './visits.gateway';
   controllers: [VisitsController],
   providers: [VisitsService, VisitsGateway],
   imports: [TypeOrmModule.forFeature([Visit]), TablesModule],
+  exports: [VisitsGateway],
 })
 export class VisitsModule {}

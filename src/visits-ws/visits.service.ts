@@ -19,22 +19,13 @@ export class VisitsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async createVisit(createVisitDto: CreateVisitDto) {
-    await this.tablesService.takeTable(createVisitDto.tableId);
-    await this.visitRepository.save({
-      table: { id: createVisitDto.tableId },
-      entry: new Date(),
-    });
-    return { message: 'Visit created successfully' };
-  }
-
-  async findAll() {
+  async findAllIncludingInactive() {
     return await this.visitRepository.find({
       relations: ['table'],
     });
   }
 
-  async findAllActive() {
+  async findAll() {
     const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
     return await qb.where('visit.exit IS NULL').getMany();
   }
@@ -44,6 +35,15 @@ export class VisitsService {
     return await qb
       .leftJoinAndSelect('visit.orders', 'order')
       .leftJoinAndSelect('order.product', 'product')
+      .where('visit.exit IS NULL')
+      .getMany();
+  }
+
+  async findWithUnitOrders() {
+    const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
+    return await qb
+      .leftJoinAndSelect('visit.unitOrders', 'unitOrder')
+      .leftJoinAndSelect('unitOrder.product', 'product')
       .where('visit.exit IS NULL')
       .getMany();
   }
@@ -61,22 +61,28 @@ export class VisitsService {
     return visit;
   }
 
+  async createVisit(createVisitDto: CreateVisitDto) {
+    await this.tablesService.takeTable(createVisitDto.tableId);
+    await this.visitRepository.save({
+      table: { id: createVisitDto.tableId },
+      entry: new Date(),
+    });
+    return { message: 'Visit created successfully' };
+  }
+
   async endVisit(id: number) {
     let visit = await this.findOne(id);
-    if (!visit) {
-      throw new NotFoundException(`Visit with id ${id} not found`);
-    }
 
     if (visit.exit) {
       throw new BadRequestException(`Visit with id ${id} is already ended`);
     }
 
+    await this.tablesService.releaseTable(visit.table.id);
+
     visit = await this.visitRepository.save({
       ...visit,
       exit: new Date(),
     });
-
-    await this.tablesService.releaseTable(visit.table.id);
 
     return { message: 'Visit ended successfully' };
   }

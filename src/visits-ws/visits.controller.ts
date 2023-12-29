@@ -1,46 +1,12 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  ParseIntPipe,
-} from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { VisitsService } from './visits.service';
-import { CreateVisitDto } from './dto/create-visit.dto';
 
 @Controller('visits')
 export class VisitsController {
   constructor(private readonly visitsService: VisitsService) {}
 
-  @Post()
-  create(@Body() createVisitDto: CreateVisitDto) {
-    return this.visitsService.createVisit(createVisitDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.visitsService.findAll();
-  }
-
-  @Get('active')
-  findAllActive() {
-    return this.visitsService.findAllActive();
-  }
-
-  @Get('orders')
-  findWithOrders() {
-    return this.visitsService.findWithOrders();
-  }
-
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.visitsService.findOne(id);
-  }
-
-  @Patch(':id')
-  endVisit(@Param('id', ParseIntPipe) id: number) {
-    return this.visitsService.endVisit(id);
+  @Get('include-inactive')
+  findAllIncludingInactive() {
+    return this.visitsService.findAllIncludingInactive();
   }
 }
