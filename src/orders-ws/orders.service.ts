@@ -55,6 +55,7 @@ export class OrdersService {
           unitProducts.map((product) => {
             return {
               product: { id: product.productId },
+              queuedAt: new Date(),
               visit: { id: visitId },
             };
           }),

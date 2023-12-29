@@ -24,6 +24,13 @@ export class UnitOrder {
   })
   productState: PRODUCT_STATE_ENUM;
 
+  @Column({
+    name: 'queued_at',
+    type: 'timestamp',
+    nullable: true,
+  })
+  queuedAt?: Date;
+
   @ManyToOne(() => Product, (product) => product.orders, {
     nullable: false,
   })
