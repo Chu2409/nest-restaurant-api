@@ -1,5 +1,5 @@
-import { Order } from '../../orders/entities/order.entity';
-import { UnitOrder } from '../../orders/entities/unit-order.entity';
+import { Order } from '../../orders-ws/entities/order.entity';
+import { UnitOrder } from '../../orders-ws/entities/unit-order.entity';
 import {
   Column,
   Entity,

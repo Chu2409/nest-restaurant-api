@@ -34,11 +34,41 @@ export class VisitsGateway {
     private readonly visitsService: VisitsService,
   ) {}
 
-  @SubscribeMessage('get-visits-active')
-  async getVisitsActive() {
-    const visits = await this.visitsService.findAllActive();
+  @SubscribeMessage('get-visits')
+  async findAll() {
+    const visits = await this.visitsService.findAll();
     this.wss.emit('load-visits', visits);
   }
+
+  @SubscribeMessage('get-visits-with-orders')
+  async findWithOrders() {
+    const visits = await this.visitsService.findWithOrders();
+    this.wss.emit('load-visits-with-orders', visits);
+  }
+
+  // @SubscribeMessage('get-one-visit-with-orders')
+  // async findOneWithOrders(
+  //   @ConnectedSocket() client: Socket,
+  //   @MessageBody('id') id: number,
+  // ) {
+  //   const visits = await this.visitsService.findOneWithOrders(id);
+  //   client.emit('load-visits-with-orders', visits);
+  // }
+
+  @SubscribeMessage('get-visits-with-unit-orders')
+  async findWithUnitOrders() {
+    const visits = await this.visitsService.findWithUnitOrders();
+    this.wss.emit('load-visits-with-unit-orders', visits);
+  }
+
+  // @SubscribeMessage('get-one-visit-with-unit-orders')
+  // async findOneWithUnitOrders(
+  //   @ConnectedSocket() client: Socket,
+  //   @MessageBody('id') id: number,
+  // ) {
+  //   const visits = await this.visitsService.findOneWithUnitOrders(id);
+  //   client.emit('load-visits-with-unit-orders', visits);
+  // }
 
   @UseFilters(WsAndHttpExceptionFilter)
   @SubscribeMessage('create-visit')
@@ -52,8 +82,8 @@ export class VisitsGateway {
 
       client.emit('visit-response', visit);
 
-      this.tablesGateway.getTables();
-      this.getVisitsActive();
+      this.tablesGateway.findAll();
+      this.findAll();
     } catch (error) {
       if (!visit)
         client.emit('visit-response', { message: error.response.message });
@@ -72,8 +102,8 @@ export class VisitsGateway {
 
       client.emit('visit-response', visit);
 
-      this.tablesGateway.getTables();
-      this.getVisitsActive();
+      this.tablesGateway.findAll();
+      this.findAll();
     } catch (error) {
       if (!visit)
         client.emit('visit-response', { message: error.response.message });

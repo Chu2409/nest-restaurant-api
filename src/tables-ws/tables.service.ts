@@ -18,10 +18,10 @@ export class TablesService {
     return await this.tablesRepository.find({});
   }
 
-  async findAllAvailable() {
-    const tables = await this.findAll();
-    return tables.filter((table) => table.availability);
-  }
+  // async findAllAvailable() {
+  //   const tables = await this.findAll();
+  //   return tables.filter((table) => table.availability);
+  // }
 
   async findOne(id: number) {
     const table = await this.tablesRepository.findOneBy({ id });
