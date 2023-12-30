@@ -1,13 +1,16 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { CreateVisitDto } from './dto/create-visit.dto';
 import { Visit } from './entities/visit.entity';
 import { TablesService } from 'src/tables-ws/tables.service';
+import { OrdersService } from '../orders-ws/orders.service';
 
 @Injectable()
 export class VisitsService {
@@ -17,6 +20,9 @@ export class VisitsService {
 
     private readonly tablesService: TablesService,
     private readonly dataSource: DataSource,
+
+    @Inject(forwardRef(() => OrdersService))
+    private readonly ordersService: OrdersService,
   ) {}
 
   async findAllIncludingInactive() {
@@ -26,17 +32,22 @@ export class VisitsService {
   }
 
   async findAll() {
-    const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
-    return await qb.where('visit.exit IS NULL').getMany();
+    return await this.visitRepository.find({
+      where: { exit: null },
+      relations: ['table'],
+    });
   }
 
   async findWithOrders() {
-    const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
-    return await qb
-      .leftJoinAndSelect('visit.orders', 'order')
-      .leftJoinAndSelect('order.product', 'product')
-      .where('visit.exit IS NULL')
-      .getMany();
+    const ordersVisit = await this.ordersService.getUnitOPerVisitsFIFO();
+    console.log(ordersVisit);
+    const visits = [];
+
+    for (const visit of ordersVisit) {
+      visits.push(await this.findOneWithOrders(visit.visit.id));
+    }
+
+    return visits;
   }
 
   async findOneWithOrders(id: number) {
@@ -49,12 +60,15 @@ export class VisitsService {
   }
 
   async findWithUnitOrders() {
-    const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
-    return await qb
-      .leftJoinAndSelect('visit.unitOrders', 'unitOrder')
-      .leftJoinAndSelect('unitOrder.product', 'product')
-      .where('visit.exit IS NULL')
-      .getMany();
+    const ordersVisit = await this.ordersService.getUnitOPerVisitsFIFO();
+    console.log(ordersVisit);
+    const visits = [];
+
+    for (const visit of ordersVisit) {
+      visits.push(await this.findOneWithUnitOrders(visit.visit.id));
+    }
+
+    return visits;
   }
 
   async findOneWithUnitOrders(id: number) {

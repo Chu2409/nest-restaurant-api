@@ -7,7 +7,13 @@ import {
   WsException,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { Catch, HttpException, UseFilters } from '@nestjs/common';
+import {
+  Catch,
+  HttpException,
+  Inject,
+  UseFilters,
+  forwardRef,
+} from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { VisitsGateway } from 'src/visits-ws/visits.gateway';
@@ -31,6 +37,7 @@ export class OrdersGateway {
   wss: Server;
 
   constructor(
+    @Inject(forwardRef(() => VisitsGateway))
     private readonly visitsGateaway: VisitsGateway,
     private readonly ordersService: OrdersService,
   ) {}

@@ -4,7 +4,6 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { CreateOrderDto, UnitProductOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Order } from './entities/order.entity';
@@ -136,5 +135,33 @@ export class OrdersService {
     });
 
     return unitOrders;
+  }
+
+  async getUnitOPerVisitsFIFO() {
+    const qb = this.dataSource.createQueryBuilder(UnitOrder, 'unitOrder');
+
+    // Subconsulta para obtener el ID de la unitOrder más antigua para cada visit_id.
+    const subQuery = qb
+      .subQuery()
+      .select('MIN(unitOrder.queuedAt)', 'minQueuedAt')
+      .from(UnitOrder, 'unitOrder')
+      .where('unitOrder.productState = :state', {
+        state: PRODUCT_STATE_ENUM.PREPARANDO,
+      })
+      .andWhere('visit.exit IS NULL')
+      .groupBy('unitOrder.visit_id')
+      .getQuery();
+
+    // Consulta principal que selecciona todas las unitOrders donde la queuedAt
+    // coincide con la queuedAt más antigua obtenida en la subconsulta.
+    return (
+      (await qb
+        .leftJoinAndSelect('unitOrder.visit', 'visit')
+        //.select('unitOrder.visit.id', 'visitId')
+        .where(`unitOrder.queuedAt IN ${subQuery}`)
+        .orderBy('unitOrder.queuedAt', 'ASC')
+        .getMany()) as UnitOrder[]
+    );
+    //.getRawMany()) as { visitId: number }[];
   }
 }
