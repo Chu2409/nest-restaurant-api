@@ -72,19 +72,29 @@ export class OrdersService {
     }
   }
 
-  async changeStatusUnitOrder(changeStatusDto: ChangeProductOrderStatusDto) {
+  async changeStatusUnitOrder(
+    changeStatusDto: ChangeProductOrderStatusDto,
+  ): Promise<boolean> {
+    const { unitOrderId, state } = changeStatusDto;
     const unitOrder = await this.unitOrdersRepository.findOneBy({
-      product: { id: changeStatusDto.productId },
-      productState: PRODUCT_STATE_ENUM.PREPARANDO,
+      id: unitOrderId,
     });
 
     if (!unitOrder) throw new BadRequestException('Unit order not found');
 
-    unitOrder.productState = PRODUCT_STATE_ENUM.LISTO;
-
-    await this.unitOrdersRepository.save(unitOrder);
-
-    return { message: 'Unit order status changed successfully' };
+    try {
+      await this.dataSource
+        .createQueryBuilder()
+        .update(UnitOrder)
+        .set({ productState: state })
+        .where('id = :id', { id: unitOrderId })
+        .execute();
+      return true;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Unexpected error changing product order status, error:' + error,
+      );
+    }
   }
 
   async serveUnitOrder(UnitOrderId: number) {

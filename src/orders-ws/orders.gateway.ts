@@ -1,38 +1,45 @@
 import {
+  ConnectedSocket,
+  MessageBody,
+  SubscribeMessage,
   // ConnectedSocket,
   // MessageBody,
   // SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  WsException,
   // WsException,
 } from '@nestjs/websockets';
 import {
   Server,
+  Socket,
   //Socket
 } from 'socket.io';
 import {
-  // Catch,
-  // HttpException,
+  Catch,
+  HttpException,
   Inject,
-  //UseFilters,
+  UseFilters,
   forwardRef,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 // import { CreateOrderDto } from './dto/create-order.dto';
 import { VisitsGateway } from 'src/visits-ws/visits.gateway';
+import { ChangeProductOrderStatusDto } from './dto/change-product-order-status.dto';
+import { PRODUCT_STATE_ENUM } from 'src/common/enums/product-state.enum';
 // import { ChangeProductOrderStatusDto } from './dto/change-product-order-status.dto';
 
-// @Catch(WsException, HttpException)
-// class WsAndHttpExceptionFilter {
-//   // public catch(exception: HttpException, host: ArgumentsHost) {
-//   public catch() {
-//     // Here you have the exception and you can check the data
-//     // const ctx = host.switchToWs();
-//     // const client = ctx.getClient() as Socket;
-//     // client.emit('take-table-response', exception.message);
-//     // console.log('Error');
-//   }
-// }
+@Catch(WsException, HttpException)
+class WsAndHttpExceptionFilter {
+  // public catch(exception: HttpException, host: ArgumentsHost) {
+  public catch() {
+    // Here you have the exception and you can check the data
+    // const ctx = host.switchToWs();
+    // const client = ctx.getClient() as Socket;
+    // client.emit('take-table-response', exception.message);
+    // console.log('Error');
+  }
+}
 
 @WebSocketGateway({ cors: true })
 export class OrdersGateway {
@@ -64,28 +71,31 @@ export class OrdersGateway {
   //   }
   // }
 
-  // @UseFilters(WsAndHttpExceptionFilter)
-  // @SubscribeMessage('change-status-unit-order')
-  // async changeStatusUnitOrder(
-  //   @ConnectedSocket() client: Socket,
-  //   @MessageBody() changeProductOrderStatusDto: ChangeProductOrderStatusDto,
-  // ) {
-  //   let order;
-  //   try {
-  //     order = await this.ordersService.changeStatusUnitOrder(
-  //       changeProductOrderStatusDto,
-  //     );
-  //     client.emit('change-status-unit-order-response', order);
+  @UseFilters(WsAndHttpExceptionFilter)
+  @SubscribeMessage('change-status-unit-order')
+  async changeStatusUnitOrder(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() changeProductOrderStatusDto: ChangeProductOrderStatusDto,
+  ) {
+    try {
+      const order = await this.ordersService.changeStatusUnitOrder(
+        changeProductOrderStatusDto,
+      );
 
-  //     this.visitsGateaway.findWithOrders();
-  //     this.visitsGateaway.findWithUnitOrders();
-  //   } catch (error) {
-  //     if (!order)
-  //       client.emit('change-status-unit-order-error', {
-  //         message: error.response.message,
-  //       });
-  //   }
-  // }
+      if (order === false)
+        throw new Error('No se pudo cambiar el estado del pedido');
+
+      client.emit('change-status-unit-order-response', order);
+
+      if (changeProductOrderStatusDto.state === PRODUCT_STATE_ENUM.LISTO) {
+        this.wss.emit('order-ready', order);
+      }
+    } catch (error) {
+      client.emit('change-status-unit-order-error', {
+        message: error,
+      });
+    }
+  }
 
   // @UseFilters(WsAndHttpExceptionFilter)
   // @SubscribeMessage('serve-unit-order')

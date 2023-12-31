@@ -50,6 +50,7 @@ export class MasterOrdersService {
       });
       order.quantity = productData.quantity;
       order.masterOrder = masterOrder;
+      order.queuedAt = new Date();
       await this.ordersRepository.save(order);
 
       const unitOrders = Array.from({ length: productData.quantity }, () => {
@@ -66,9 +67,9 @@ export class MasterOrdersService {
     return masterOrder; // Retorna la MasterOrder creada con sus Orders y UnitOrders
   }
 
-  findAll() {
+  async findAll() {
     const qb = this.dataSource.createQueryBuilder(MasterOrder, 'masterOrder');
-    return qb
+    return await qb
       .leftJoinAndSelect('masterOrder.orders', 'order')
       .leftJoinAndSelect('order.product', 'product')
       .leftJoinAndSelect('order.unitOrders', 'unitOrder')
@@ -78,9 +79,9 @@ export class MasterOrdersService {
       .getMany();
   }
 
-  findAllActive() {
+  async findAllActive() {
     const qb = this.dataSource.createQueryBuilder(MasterOrder, 'masterOrder');
-    return qb
+    const r = await qb
       .leftJoinAndSelect('masterOrder.orders', 'order')
       .leftJoinAndSelect('order.product', 'product')
       .leftJoinAndSelect('order.unitOrders', 'unitOrder')
@@ -89,11 +90,12 @@ export class MasterOrdersService {
       .where('visit.exit IS NULL')
       .orderBy('masterOrder.createdAt', 'ASC')
       .getMany();
+    return r;
   }
 
-  findAllPreparing() {
+  async findAllPreparing() {
     const qb = this.dataSource.createQueryBuilder(MasterOrder, 'masterOrder');
-    return qb
+    const r = await qb
       .leftJoinAndSelect('masterOrder.orders', 'order')
       .leftJoinAndSelect('order.product', 'product')
       .leftJoinAndSelect(
@@ -112,11 +114,12 @@ export class MasterOrdersService {
       .andWhere('visit.exit IS NULL')
       .orderBy('masterOrder.createdAt', 'ASC')
       .getMany();
+    return r;
   }
 
-  findAllReady() {
+  async findAllReady() {
     const qb = this.dataSource.createQueryBuilder(MasterOrder, 'masterOrder');
-    return qb
+    return await qb
       .leftJoinAndSelect('masterOrder.orders', 'order')
       .leftJoinAndSelect('order.product', 'product')
       .leftJoinAndSelect(
@@ -137,9 +140,9 @@ export class MasterOrdersService {
       .getMany();
   }
 
-  findAllServed() {
+  async findAllServed() {
     const qb = this.dataSource.createQueryBuilder(MasterOrder, 'masterOrder');
-    return qb
+    return await qb
       .leftJoinAndSelect('masterOrder.orders', 'order')
       .leftJoinAndSelect('order.product', 'product')
       .leftJoinAndSelect(
@@ -160,9 +163,9 @@ export class MasterOrdersService {
       .getMany();
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     const qb = this.dataSource.createQueryBuilder(MasterOrder, 'masterOrder');
-    return qb
+    return await qb
       .leftJoinAndSelect('masterOrder.orders', 'order')
       .leftJoinAndSelect('order.product', 'product')
       .leftJoinAndSelect('order.unitOrders', 'unitOrder')
@@ -172,8 +175,8 @@ export class MasterOrdersService {
       .getOne();
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     const qb = this.dataSource.createQueryBuilder(MasterOrder, 'masterOrder');
-    return qb.delete().where('id = :id', { id }).execute();
+    return await qb.delete().where('id = :id', { id }).execute();
   }
 }

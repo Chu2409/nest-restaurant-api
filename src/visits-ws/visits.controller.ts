@@ -10,10 +10,10 @@ export class VisitsController {
     return this.visitsService.findAllIncludingInactive();
   }
 
-  @Get('orders/:id')
-  findOneWithOrders(@Param('id', ParseIntPipe) id: number) {
-    return this.visitsService.findOneWithOrders(id);
-  }
+  // @Get('orders/:id')
+  // findOneWithOrders(@Param('id', ParseIntPipe) id: number) {
+  //   return this.visitsService.findOneWithOrders(id);
+  // }
 
   @Get('unit-orders/:id')
   findOneWithUnitOrders(@Param('id', ParseIntPipe) id: number) {

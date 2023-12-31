@@ -1,3 +1,4 @@
+import { Invoice } from 'src/invoices/entities/invoice.entity';
 import { MasterOrder } from 'src/master-orders/entities/master-order.entity';
 import { Table } from 'src/tables-ws/entities/table.entity';
 import {
@@ -6,6 +7,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -39,4 +41,10 @@ export class Visit {
 
   @OneToMany(() => MasterOrder, (masterOders) => masterOders.visit)
   masterOrders?: MasterOrder[];
+
+  @OneToOne(() => Invoice, (invoice) => invoice.visit, { nullable: true })
+  @JoinColumn({
+    name: 'invoice_id',
+  })
+  invoice?: Invoice;
 }

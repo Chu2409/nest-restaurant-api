@@ -31,9 +31,10 @@ export class MasterOrdersGateway {
 
   @UseFilters(WsAndHttpExceptionFilter)
   @SubscribeMessage('create-master-order')
-  create(@MessageBody() createMasterOrderDto: CreateMasterOrderDto) {
+  async create(@MessageBody() createMasterOrderDto: CreateMasterOrderDto) {
     try {
-      const masterOrder = this.masterOrdersService.create(createMasterOrderDto);
+      const masterOrder =
+        await this.masterOrdersService.create(createMasterOrderDto);
       if (masterOrder) {
         this.wss.emit('create-master-order-response', masterOrder);
       } else {
@@ -49,15 +50,20 @@ export class MasterOrdersGateway {
 
   @UseFilters(WsAndHttpExceptionFilter)
   @SubscribeMessage('find-all-master-orders')
-  findAll() {
-    return this.masterOrdersService.findAll();
+  async findAll() {
+    const masterOrders = await this.masterOrdersService.findAll();
+    if (masterOrders) {
+      this.wss.emit('load-all-master-orders', masterOrders);
+    } else {
+      this.wss.emit('load-all-master-orders-error', 'No hay pedidos');
+    }
   }
 
   @UseFilters(WsAndHttpExceptionFilter)
   @SubscribeMessage('find-active-master-orders')
-  findAllActive() {
+  async findAllActive() {
     try {
-      const masterOrders = this.masterOrdersService.findAllActive();
+      const masterOrders = await this.masterOrdersService.findAllActive();
       if (masterOrders) {
         this.wss.emit('load-active-master-orders', masterOrders);
       } else {
@@ -73,9 +79,9 @@ export class MasterOrdersGateway {
 
   @UseFilters(WsAndHttpExceptionFilter)
   @SubscribeMessage('find-preparing-master-orders')
-  findAllPreparing() {
+  async findAllPreparing() {
     try {
-      const masterOrders = this.masterOrdersService.findAllPreparing();
+      const masterOrders = await this.masterOrdersService.findAllPreparing();
       if (masterOrders) {
         this.wss.emit('load-preparing-master-orders', masterOrders);
       } else {
@@ -91,9 +97,9 @@ export class MasterOrdersGateway {
 
   @UseFilters(WsAndHttpExceptionFilter)
   @SubscribeMessage('find-ready-master-orders')
-  findAllReady() {
+  async findAllReady() {
     try {
-      const masterOrders = this.masterOrdersService.findAllReady();
+      const masterOrders = await this.masterOrdersService.findAllReady();
       if (masterOrders) {
         this.wss.emit('load-ready-master-orders', masterOrders);
       } else {
@@ -109,9 +115,9 @@ export class MasterOrdersGateway {
 
   @UseFilters(WsAndHttpExceptionFilter)
   @SubscribeMessage('find-served-master-orders')
-  findAllServed() {
+  async findAllServed() {
     try {
-      const masterOrders = this.masterOrdersService.findAllServed();
+      const masterOrders = await this.masterOrdersService.findAllServed();
       if (masterOrders) {
         this.wss.emit('load-served-master-orders', masterOrders);
       } else {
@@ -127,9 +133,9 @@ export class MasterOrdersGateway {
 
   @UseFilters(WsAndHttpExceptionFilter)
   @SubscribeMessage('find-one-master-order')
-  findOne(@MessageBody() id: number) {
+  async findOne(@MessageBody() id: number) {
     try {
-      const masterOrder = this.masterOrdersService.findOne(id);
+      const masterOrder = await this.masterOrdersService.findOne(id);
       if (masterOrder) {
         this.wss.emit('load-one-master-order', masterOrder);
       } else {
@@ -145,9 +151,9 @@ export class MasterOrdersGateway {
 
   @UseFilters(WsAndHttpExceptionFilter)
   @SubscribeMessage('remove-master-order')
-  remove(@MessageBody() id: number) {
+  async remove(@MessageBody() id: number) {
     try {
-      const masterOrder = this.masterOrdersService.remove(id);
+      const masterOrder = await this.masterOrdersService.remove(id);
       if (masterOrder) {
         this.wss.emit('remove-master-order-response', masterOrder);
       } else {

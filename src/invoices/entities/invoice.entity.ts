@@ -7,6 +7,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Customer } from 'src/customers/entities/customer.entity';
@@ -48,7 +49,7 @@ export class Invoice {
   })
   employee: Employee;
 
-  @ManyToOne(() => Visit, (visit) => visit.invoices, { nullable: false })
+  @OneToOne(() => Visit, (visit) => visit.invoice, { nullable: false })
   @JoinColumn({
     name: 'visit_id',
   })

@@ -1,11 +1,11 @@
-import { IsNumber, IsPositive } from 'class-validator';
+import { IsEnum, IsNumber, IsPositive } from 'class-validator';
+import { PRODUCT_STATE_ENUM } from 'src/common/enums/product-state.enum';
 
 export class ChangeProductOrderStatusDto {
   @IsNumber()
   @IsPositive()
-  productId: number;
+  unitOrderId: number;
 
-  @IsNumber()
-  @IsPositive()
-  visitId: number;
+  @IsEnum(PRODUCT_STATE_ENUM)
+  state: PRODUCT_STATE_ENUM;
 }
