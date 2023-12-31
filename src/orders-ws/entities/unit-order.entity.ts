@@ -1,6 +1,5 @@
 import { PRODUCT_STATE_ENUM } from '../../common/enums/product-state.enum';
 import { Product } from '../../products/entities/product.entity';
-import { Visit } from '../../visits-ws/entities/visit.entity';
 import {
   Column,
   Entity,
@@ -8,6 +7,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Order } from './order.entity';
 
 @Entity('unit_orders')
 export class UnitOrder {
@@ -15,21 +15,6 @@ export class UnitOrder {
     name: 'id',
   })
   id: number;
-
-  @Column({
-    name: 'product_state',
-    type: 'enum',
-    enum: PRODUCT_STATE_ENUM,
-    default: PRODUCT_STATE_ENUM.PREPARANDO,
-  })
-  productState: PRODUCT_STATE_ENUM;
-
-  @Column({
-    name: 'queued_at',
-    type: 'timestamp',
-    nullable: true,
-  })
-  queuedAt?: Date;
 
   @ManyToOne(() => Product, (product) => product.orders, {
     nullable: false,
@@ -39,9 +24,17 @@ export class UnitOrder {
   })
   product: Product;
 
-  @ManyToOne(() => Visit, (visit) => visit.unitOrders, { nullable: false })
-  @JoinColumn({
-    name: 'visit_id',
+  @Column({
+    name: 'product_state',
+    type: 'enum',
+    enum: PRODUCT_STATE_ENUM,
+    default: PRODUCT_STATE_ENUM.PREPARANDO,
   })
-  visit: Visit;
+  productState: PRODUCT_STATE_ENUM;
+
+  @ManyToOne(() => Order, (order) => order.unitOrders, { nullable: false })
+  @JoinColumn({
+    name: 'order_id',
+  })
+  order: Order;
 }

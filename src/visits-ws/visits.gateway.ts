@@ -40,26 +40,26 @@ export class VisitsGateway {
     this.wss.emit('load-visits', visits);
   }
 
-  @SubscribeMessage('get-visits-with-orders')
-  async findWithOrders() {
-    const visits = await this.visitsService.findWithOrders();
-    this.wss.emit('load-visits-with-orders', visits);
-  }
-
-  // @SubscribeMessage('get-one-visit-with-orders')
-  // async findOneWithOrders(
-  //   @ConnectedSocket() client: Socket,
-  //   @MessageBody('id') id: number,
-  // ) {
-  //   const visits = await this.visitsService.findOneWithOrders(id);
-  //   client.emit('load-visits-with-orders', visits);
+  // @SubscribeMessage('get-visits-with-orders')
+  // async findWithOrders() {
+  //   const visits = await this.visitsService.findWithOrders();
+  //   this.wss.emit('load-visits-with-orders', visits);
   // }
 
-  @SubscribeMessage('get-visits-with-unit-orders')
-  async findWithUnitOrders() {
-    const visits = await this.visitsService.findWithUnitOrders();
-    this.wss.emit('load-visits-with-unit-orders', visits);
-  }
+  // // @SubscribeMessage('get-one-visit-with-orders')
+  // // async findOneWithOrders(
+  // //   @ConnectedSocket() client: Socket,
+  // //   @MessageBody('id') id: number,
+  // // ) {
+  // //   const visits = await this.visitsService.findOneWithOrders(id);
+  // //   client.emit('load-visits-with-orders', visits);
+  // // }
+
+  // @SubscribeMessage('get-visits-with-unit-orders')
+  // async findWithUnitOrders() {
+  //   const visits = await this.visitsService.findWithUnitOrders();
+  //   this.wss.emit('load-visits-with-unit-orders', visits);
+  // }
 
   // @SubscribeMessage('get-one-visit-with-unit-orders')
   // async findOneWithUnitOrders(

@@ -38,38 +38,36 @@ export class VisitsService {
     });
   }
 
-  async findWithOrders() {
-    const ordersVisit = await this.ordersService.getUnitOPerVisitsFIFO();
-    console.log(ordersVisit);
-    const visits = [];
+  // async findWithOrders() {
+  //   const ordersVisit = await this.ordersService.getUnitOPerVisitsFIFO();
+  //   const visits = [];
 
-    for (const visit of ordersVisit) {
-      visits.push(await this.findOneWithOrders(visit.visit.id));
-    }
+  //   for (const visit of ordersVisit) {
+  //     visits.push(await this.findOneWithOrders(visit.visit.id));
+  //   }
 
-    return visits;
-  }
+  //   return visits;
+  // }
 
-  async findOneWithOrders(id: number) {
-    const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
-    return await qb
-      .leftJoinAndSelect('visit.orders', 'order')
-      .leftJoinAndSelect('order.product', 'product')
-      .where('visit.id = :id', { id })
-      .getOne();
-  }
+  // async findOneWithOrders(id: number) {
+  //   const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
+  //   return await qb
+  //     .leftJoinAndSelect('visit.orders', 'order')
+  //     .leftJoinAndSelect('order.product', 'product')
+  //     .where('visit.id = :id', { id })
+  //     .getOne();
+  // }
 
-  async findWithUnitOrders() {
-    const ordersVisit = await this.ordersService.getUnitOPerVisitsFIFO();
-    console.log(ordersVisit);
-    const visits = [];
+  // async findWithUnitOrders() {
+  //   const ordersVisit = await this.ordersService.getUnitOPerVisitsFIFO();
+  //   const visits = [];
 
-    for (const visit of ordersVisit) {
-      visits.push(await this.findOneWithUnitOrders(visit.visit.id));
-    }
+  //   for (const visit of ordersVisit) {
+  //     visits.push(await this.findOneWithUnitOrders(visit.visit.id));
+  //   }
 
-    return visits;
-  }
+  //   return visits;
+  // }
 
   async findOneWithUnitOrders(id: number) {
     const qb = this.dataSource.createQueryBuilder(Visit, 'visit');

@@ -1,12 +1,14 @@
+import { MasterOrder } from 'src/master-orders/entities/master-order.entity';
 import { Product } from '../../products/entities/product.entity';
-import { Visit } from '../../visits-ws/entities/visit.entity';
 import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { UnitOrder } from './unit-order.entity';
 
 @Entity('orders')
 export class Order {
@@ -29,9 +31,21 @@ export class Order {
   })
   product: Product;
 
-  @ManyToOne(() => Visit, (visit) => visit.orders, { nullable: false })
-  @JoinColumn({
-    name: 'visit_id',
+  @Column({
+    name: 'queued_at',
+    type: 'timestamp',
+    nullable: false,
   })
-  visit: Visit;
+  queuedAt: Date;
+
+  @ManyToOne(() => MasterOrder, (masterOrder) => masterOrder.orders, {
+    nullable: false,
+  })
+  @JoinColumn({
+    name: 'master_order_id',
+  })
+  masterOrder: MasterOrder;
+
+  @OneToMany(() => UnitOrder, (unitOrder) => unitOrder.order)
+  unitOrders?: UnitOrder[];
 }

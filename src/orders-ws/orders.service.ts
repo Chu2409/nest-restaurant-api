@@ -75,7 +75,6 @@ export class OrdersService {
   async changeStatusUnitOrder(changeStatusDto: ChangeProductOrderStatusDto) {
     const unitOrder = await this.unitOrdersRepository.findOneBy({
       product: { id: changeStatusDto.productId },
-      visit: { id: changeStatusDto.visitId },
       productState: PRODUCT_STATE_ENUM.PREPARANDO,
     });
 
@@ -86,6 +85,32 @@ export class OrdersService {
     await this.unitOrdersRepository.save(unitOrder);
 
     return { message: 'Unit order status changed successfully' };
+  }
+
+  async serveUnitOrder(UnitOrderId: number) {
+    const unitOrder = await this.unitOrdersRepository.findOneBy({
+      id: UnitOrderId,
+    });
+
+    if (!unitOrder) throw new BadRequestException('Unit order not found');
+
+    unitOrder.productState = PRODUCT_STATE_ENUM.SERVIDO;
+
+    await this.unitOrdersRepository.save(unitOrder);
+
+    return { message: 'Unit order status changed successfully' };
+  }
+
+  async getServeUnitOrders() {
+    const qb = this.dataSource.createQueryBuilder(UnitOrder, 'unitOrder');
+    return qb
+      .leftJoinAndSelect('unitOrder.visit', 'visit')
+      .leftJoinAndSelect('unitOrder.product', 'product')
+      .where('unitOrder.productState = :state', {
+        state: PRODUCT_STATE_ENUM.SERVIDO,
+      })
+      .andWhere('visit.exit IS NULL')
+      .getMany();
   }
 
   // async findAllActive() {

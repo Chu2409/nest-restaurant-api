@@ -1,6 +1,4 @@
-import { Invoice } from '../../invoices/entities/invoice.entity';
-import { Order } from '../../orders-ws/entities/order.entity';
-import { UnitOrder } from '../../orders-ws/entities/unit-order.entity';
+import { MasterOrder } from 'src/master-orders/entities/master-order.entity';
 import { Table } from 'src/tables-ws/entities/table.entity';
 import {
   Column,
@@ -39,12 +37,6 @@ export class Visit {
   })
   table: Table;
 
-  @OneToMany(() => Order, (order) => order.visit)
-  orders?: Order[];
-
-  @OneToMany(() => UnitOrder, (unitOrder) => unitOrder.visit)
-  unitOrders?: UnitOrder[];
-
-  @OneToMany(() => Invoice, (invoice) => invoice.visit)
-  invoices?: Invoice[];
+  @OneToMany(() => MasterOrder, (masterOders) => masterOders.visit)
+  masterOrders?: MasterOrder[];
 }

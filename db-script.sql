@@ -150,8 +150,8 @@ INSERT INTO "tables" ("id", "size", "availability") VALUES
 (8, 4, FALSE), 
 (9, 6, FALSE), 
 (10, 2, FALSE), 
-(11, 4, TRUE), 
-(12, 6, TRUE)
+(11, 4, FALSE), 
+(12, 6, FALSE)
 ;
 
 INSERT INTO "visits" ("entry", "exit", "table_id") VALUES
