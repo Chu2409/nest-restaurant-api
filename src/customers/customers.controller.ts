@@ -21,8 +21,8 @@ export class CustomersController {
   }
 
   @Get()
-  findAll() {
-    return this.customersService.findAll();
+  async findAll() {
+    return await this.customersService.findAll();
   }
 
   @Get(':id')

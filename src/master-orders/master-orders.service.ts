@@ -87,9 +87,11 @@ export class MasterOrdersService {
       .leftJoinAndSelect('order.unitOrders', 'unitOrder')
       .leftJoinAndSelect('masterOrder.visit', 'visit')
       .leftJoinAndSelect('visit.table', 'table')
+      .leftJoinAndSelect('visit.masterOrders', 'masterOrders')
       .where('visit.exit IS NULL')
       .orderBy('masterOrder.createdAt', 'ASC')
       .getMany();
+
     return r;
   }
 

@@ -32,10 +32,11 @@ export class VisitsService {
   }
 
   async findAll() {
-    return await this.visitRepository.find({
-      where: { exit: null },
-      relations: ['table'],
-    });
+    const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
+    return await qb
+      .leftJoinAndSelect('visit.table', 'table')
+      .where('visit.exit IS NULL')
+      .getMany();
   }
 
   // async findWithOrders() {
@@ -68,6 +69,14 @@ export class VisitsService {
 
   //   return visits;
   // }
+
+  async findWithMasterOrders() {
+    const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
+    return await qb
+      .leftJoinAndSelect('visit.unitOrders', 'unitOrder')
+      .leftJoinAndSelect('unitOrder.product', 'product')
+      .getMany();
+  }
 
   async findOneWithUnitOrders(id: number) {
     const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
@@ -115,5 +124,17 @@ export class VisitsService {
     });
 
     return { message: 'Visit ended successfully' };
+  }
+
+  async findOneWithMasterOrders(id: number) {
+    const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
+    return await qb
+      .leftJoinAndSelect('visit.masterOrders', 'masterOrder')
+      .leftJoinAndSelect('masterOrder.orders', 'order')
+      .leftJoinAndSelect('order.product', 'product')
+      .leftJoinAndSelect('order.unitOrders', 'unitOrder')
+      .leftJoinAndSelect('visit.table', 'table')
+      .where('visit.id = :id', { id })
+      .getOne();
   }
 }

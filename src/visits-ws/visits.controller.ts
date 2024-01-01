@@ -15,8 +15,13 @@ export class VisitsController {
   //   return this.visitsService.findOneWithOrders(id);
   // }
 
-  @Get('unit-orders/:id')
-  findOneWithUnitOrders(@Param('id', ParseIntPipe) id: number) {
-    return this.visitsService.findOneWithUnitOrders(id);
+  @Get('master-orders/:id')
+  async findOneWithUnitOrders(@Param('id', ParseIntPipe) id: number) {
+    return await this.visitsService.findOneWithMasterOrders(id);
+  }
+
+  @Get('master-orders')
+  async findWithUnitOrders() {
+    return await this.visitsService.findWithMasterOrders();
   }
 }
