@@ -9,6 +9,7 @@ import { ProductsModule } from './products/products.module';
 import { CommonModule } from './common/common.module';
 import { EmployeesModule } from './employees/employees.module';
 import { InvoicesModule } from './invoices/invoices.module';
+import { MasterOrdersModule } from './master-orders/master-orders.module';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { InvoicesModule } from './invoices/invoices.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
     }),
     CustomersModule,
     TablesModule,
@@ -32,6 +33,7 @@ import { InvoicesModule } from './invoices/invoices.module';
     EmployeesModule,
     InvoicesModule,
     TablesModule,
+    MasterOrdersModule,
   ],
 })
 export class AppModule {}

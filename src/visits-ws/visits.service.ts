@@ -32,43 +32,50 @@ export class VisitsService {
   }
 
   async findAll() {
-    return await this.visitRepository.find({
-      where: { exit: null },
-      relations: ['table'],
-    });
-  }
-
-  async findWithOrders() {
-    const ordersVisit = await this.ordersService.getUnitOPerVisitsFIFO();
-    console.log(ordersVisit);
-    const visits = [];
-
-    for (const visit of ordersVisit) {
-      visits.push(await this.findOneWithOrders(visit.visit.id));
-    }
-
-    return visits;
-  }
-
-  async findOneWithOrders(id: number) {
     const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
     return await qb
-      .leftJoinAndSelect('visit.orders', 'order')
-      .leftJoinAndSelect('order.product', 'product')
-      .where('visit.id = :id', { id })
-      .getOne();
+      .leftJoinAndSelect('visit.table', 'table')
+      .where('visit.exit IS NULL')
+      .getMany();
   }
 
-  async findWithUnitOrders() {
-    const ordersVisit = await this.ordersService.getUnitOPerVisitsFIFO();
-    console.log(ordersVisit);
-    const visits = [];
+  // async findWithOrders() {
+  //   const ordersVisit = await this.ordersService.getUnitOPerVisitsFIFO();
+  //   const visits = [];
 
-    for (const visit of ordersVisit) {
-      visits.push(await this.findOneWithUnitOrders(visit.visit.id));
-    }
+  //   for (const visit of ordersVisit) {
+  //     visits.push(await this.findOneWithOrders(visit.visit.id));
+  //   }
 
-    return visits;
+  //   return visits;
+  // }
+
+  // async findOneWithOrders(id: number) {
+  //   const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
+  //   return await qb
+  //     .leftJoinAndSelect('visit.orders', 'order')
+  //     .leftJoinAndSelect('order.product', 'product')
+  //     .where('visit.id = :id', { id })
+  //     .getOne();
+  // }
+
+  // async findWithUnitOrders() {
+  //   const ordersVisit = await this.ordersService.getUnitOPerVisitsFIFO();
+  //   const visits = [];
+
+  //   for (const visit of ordersVisit) {
+  //     visits.push(await this.findOneWithUnitOrders(visit.visit.id));
+  //   }
+
+  //   return visits;
+  // }
+
+  async findWithMasterOrders() {
+    const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
+    return await qb
+      .leftJoinAndSelect('visit.unitOrders', 'unitOrder')
+      .leftJoinAndSelect('unitOrder.product', 'product')
+      .getMany();
   }
 
   async findOneWithUnitOrders(id: number) {
@@ -117,5 +124,17 @@ export class VisitsService {
     });
 
     return { message: 'Visit ended successfully' };
+  }
+
+  async findOneWithMasterOrders(id: number) {
+    const qb = this.dataSource.createQueryBuilder(Visit, 'visit');
+    return await qb
+      .leftJoinAndSelect('visit.masterOrders', 'masterOrder')
+      .leftJoinAndSelect('masterOrder.orders', 'order')
+      .leftJoinAndSelect('order.product', 'product')
+      .leftJoinAndSelect('order.unitOrders', 'unitOrder')
+      .leftJoinAndSelect('visit.table', 'table')
+      .where('visit.id = :id', { id })
+      .getOne();
   }
 }

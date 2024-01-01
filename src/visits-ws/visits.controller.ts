@@ -10,13 +10,18 @@ export class VisitsController {
     return this.visitsService.findAllIncludingInactive();
   }
 
-  @Get('orders/:id')
-  findOneWithOrders(@Param('id', ParseIntPipe) id: number) {
-    return this.visitsService.findOneWithOrders(id);
+  // @Get('orders/:id')
+  // findOneWithOrders(@Param('id', ParseIntPipe) id: number) {
+  //   return this.visitsService.findOneWithOrders(id);
+  // }
+
+  @Get('master-orders/:id')
+  async findOneWithUnitOrders(@Param('id', ParseIntPipe) id: number) {
+    return await this.visitsService.findOneWithMasterOrders(id);
   }
 
-  @Get('unit-orders/:id')
-  findOneWithUnitOrders(@Param('id', ParseIntPipe) id: number) {
-    return this.visitsService.findOneWithUnitOrders(id);
+  @Get('master-orders')
+  async findWithUnitOrders() {
+    return await this.visitsService.findWithMasterOrders();
   }
 }

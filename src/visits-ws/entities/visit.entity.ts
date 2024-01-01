@@ -1,6 +1,5 @@
-import { Invoice } from '../../invoices/entities/invoice.entity';
-import { Order } from '../../orders-ws/entities/order.entity';
-import { UnitOrder } from '../../orders-ws/entities/unit-order.entity';
+import { Invoice } from 'src/invoices/entities/invoice.entity';
+import { MasterOrder } from 'src/master-orders/entities/master-order.entity';
 import { Table } from 'src/tables-ws/entities/table.entity';
 import {
   Column,
@@ -8,6 +7,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -39,12 +39,12 @@ export class Visit {
   })
   table: Table;
 
-  @OneToMany(() => Order, (order) => order.visit)
-  orders?: Order[];
+  @OneToMany(() => MasterOrder, (masterOders) => masterOders.visit)
+  masterOrders?: MasterOrder[];
 
-  @OneToMany(() => UnitOrder, (unitOrder) => unitOrder.visit)
-  unitOrders?: UnitOrder[];
-
-  @OneToMany(() => Invoice, (invoice) => invoice.visit)
-  invoices?: Invoice[];
+  @OneToOne(() => Invoice, (invoice) => invoice.visit, { nullable: true })
+  @JoinColumn({
+    name: 'invoice_id',
+  })
+  invoice?: Invoice;
 }

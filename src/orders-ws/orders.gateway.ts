@@ -2,11 +2,19 @@ import {
   ConnectedSocket,
   MessageBody,
   SubscribeMessage,
+  // ConnectedSocket,
+  // MessageBody,
+  // SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
   WsException,
+  // WsException,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
+import {
+  Server,
+  Socket,
+  //Socket
+} from 'socket.io';
 import {
   Catch,
   HttpException,
@@ -15,9 +23,11 @@ import {
   forwardRef,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { CreateOrderDto } from './dto/create-order.dto';
+// import { CreateOrderDto } from './dto/create-order.dto';
 import { VisitsGateway } from 'src/visits-ws/visits.gateway';
 import { ChangeProductOrderStatusDto } from './dto/change-product-order-status.dto';
+import { PRODUCT_STATE_ENUM } from 'src/common/enums/product-state.enum';
+// import { ChangeProductOrderStatusDto } from './dto/change-product-order-status.dto';
 
 @Catch(WsException, HttpException)
 class WsAndHttpExceptionFilter {
@@ -42,24 +52,24 @@ export class OrdersGateway {
     private readonly ordersService: OrdersService,
   ) {}
 
-  @UseFilters(WsAndHttpExceptionFilter)
-  @SubscribeMessage('create-order')
-  async createOrder(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() createOrderDto: CreateOrderDto,
-  ) {
-    let order;
-    try {
-      order = await this.ordersService.create(createOrderDto);
-      client.emit('order-response', order);
+  // @UseFilters(WsAndHttpExceptionFilter)
+  // @SubscribeMessage('create-order')
+  // async createOrder(
+  //   @ConnectedSocket() client: Socket,
+  //   @MessageBody() createOrderDto: CreateOrderDto,
+  // ) {
+  //   let order;
+  //   try {
+  //     order = await this.ordersService.create(createOrderDto);
+  //     client.emit('order-response', order);
 
-      this.visitsGateaway.findWithOrders();
-      this.visitsGateaway.findWithUnitOrders();
-    } catch (error) {
-      if (!order)
-        client.emit('order-response', { message: error.response.message });
-    }
-  }
+  //     this.visitsGateaway.findWithOrders();
+  //     this.visitsGateaway.findWithUnitOrders();
+  //   } catch (error) {
+  //     if (!order)
+  //       client.emit('order-error', { message: error.response.message });
+  //   }
+  // }
 
   @UseFilters(WsAndHttpExceptionFilter)
   @SubscribeMessage('change-status-unit-order')
@@ -67,20 +77,58 @@ export class OrdersGateway {
     @ConnectedSocket() client: Socket,
     @MessageBody() changeProductOrderStatusDto: ChangeProductOrderStatusDto,
   ) {
-    let order;
     try {
-      order = await this.ordersService.changeStatusUnitOrder(
+      const order = await this.ordersService.changeStatusUnitOrder(
         changeProductOrderStatusDto,
       );
+
+      if (order === false)
+        throw new Error('No se pudo cambiar el estado del pedido');
+
       client.emit('change-status-unit-order-response', order);
 
-      this.visitsGateaway.findWithOrders();
-      this.visitsGateaway.findWithUnitOrders();
+      if (changeProductOrderStatusDto.state === PRODUCT_STATE_ENUM.LISTO) {
+        this.wss.emit('order-ready', order);
+      }
     } catch (error) {
-      if (!order)
-        client.emit('change-status-unit-order-response', {
-          message: error.response.message,
-        });
+      client.emit('change-status-unit-order-error', {
+        message: error,
+      });
     }
   }
+
+  // @UseFilters(WsAndHttpExceptionFilter)
+  // @SubscribeMessage('serve-unit-order')
+  // async serveUnitOrder(@MessageBody() unitOrderId: number) {
+  //   let order;
+  //   try {
+  //     order = await this.ordersService.serveUnitOrder(unitOrderId);
+  //     this.wss.emit('serve-unit-order-response', order);
+
+  //     this.getServeUnitOrders();
+  //   } catch (error) {
+  //     if (!order)
+  //       this.wss.emit('serve-unit-order-error', {
+  //         message: error.response.message,
+  //       });
+  //   }
+  // }
+
+  // @UseFilters(WsAndHttpExceptionFilter)
+  // @SubscribeMessage('get-serve-unit-orders')
+  // async getServeUnitOrders() {
+  //   let orders;
+  //   try {
+  //     orders = await this.ordersService.getServeUnitOrders();
+  //     this.wss.emit('load-serve-unit-orders', orders);
+
+  //     this.visitsGateaway.findWithOrders();
+  //     this.visitsGateaway.findWithUnitOrders();
+  //   } catch (error) {
+  //     if (!orders)
+  //       this.wss.emit('load-serve-unit-orders-error', {
+  //         message: error.response.message,
+  //       });
+  //   }
+  // }
 }
