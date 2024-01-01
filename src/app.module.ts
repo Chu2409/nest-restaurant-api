@@ -22,7 +22,7 @@ import { MasterOrdersModule } from './master-orders/master-orders.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       autoLoadEntities: true,
-      synchronize: false,
+      synchronize: process.env.DB_SYNC === 'true',
     }),
     CustomersModule,
     TablesModule,

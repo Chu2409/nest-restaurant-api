@@ -10,6 +10,7 @@ import {
 import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
+import { LoginEmployeeDto } from './dto/login-employee.dto';
 
 @Controller('employees')
 export class EmployeesController {
@@ -18,6 +19,11 @@ export class EmployeesController {
   @Post()
   create(@Body() createEmployeeDto: CreateEmployeeDto) {
     return this.employeesService.create(createEmployeeDto);
+  }
+
+  @Post('login')
+  login(@Body() loginEmployeeDto: LoginEmployeeDto) {
+    return this.employeesService.login(loginEmployeeDto);
   }
 
   @Get()
