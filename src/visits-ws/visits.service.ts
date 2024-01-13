@@ -7,10 +7,10 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-import { CreateVisitDto } from './dto/create-visit.dto';
 import { Visit } from './entities/visit.entity';
-import { TablesService } from 'src/tables-ws/tables.service';
+import { TablesService } from '../tables-ws/tables.service';
 import { OrdersService } from '../orders-ws/orders.service';
+import { CreateVisitDto } from './dto/create-visit.dto';
 
 @Injectable()
 export class VisitsService {

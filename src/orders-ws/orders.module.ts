@@ -1,11 +1,11 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { OrdersService } from './orders.service';
-import { OrdersController } from './orders.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Order } from './entities/order.entity';
-import { UnitOrder } from './entities/unit-order.entity';
+import { VisitsModule } from '../visits-ws/visits.module';
 import { OrdersGateway } from './orders.gateway';
-import { VisitsModule } from 'src/visits-ws/visits.module';
+import { UnitOrder } from './entities/unit-order.entity';
+import { Order } from './entities/order.entity';
+import { OrdersController } from './orders.controller';
+import { OrdersService } from './orders.service';
 
 @Module({
   controllers: [OrdersController],

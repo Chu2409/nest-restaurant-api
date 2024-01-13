@@ -1,5 +1,3 @@
-import { MasterOrder } from 'src/master-orders/entities/master-order.entity';
-import { Product } from '../../products/entities/product.entity';
 import {
   Column,
   Entity,
@@ -8,6 +6,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { MasterOrder } from '../../master-orders/entities/master-order.entity';
+import { Product } from '../../products/entities/product.entity';
 import { UnitOrder } from './unit-order.entity';
 
 @Entity('orders')

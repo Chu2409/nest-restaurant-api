@@ -1,5 +1,3 @@
-import { Order } from 'src/orders-ws/entities/order.entity';
-import { Visit } from 'src/visits-ws/entities/visit.entity';
 import {
   CreateDateColumn,
   Entity,
@@ -8,6 +6,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Order } from '../../orders-ws/entities/order.entity';
+import { Visit } from '../../visits-ws/entities/visit.entity';
 
 @Entity('master_orders')
 export class MasterOrder {

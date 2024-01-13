@@ -1,5 +1,3 @@
-import { PRODUCT_STATE_ENUM } from '../../common/enums/product-state.enum';
-import { Product } from '../../products/entities/product.entity';
 import {
   Column,
   Entity,
@@ -7,6 +5,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { PRODUCT_STATE_ENUM } from '../../common/enums/product-state.enum';
+import { Product } from '../../products/entities/product.entity';
 import { Order } from './order.entity';
 
 @Entity('unit_orders')
