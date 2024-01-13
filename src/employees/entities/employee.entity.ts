@@ -8,8 +8,9 @@ export class Employee {
     name: 'id',
     type: 'varchar',
     length: '10',
+    unique: true,
   })
-  id: number;
+  id: string;
 
   @Column({
     name: 'first_name',

@@ -7,6 +7,7 @@ export class Customer {
     name: 'id',
     type: 'varchar',
     length: '10',
+    unique: true,
   })
   id: string;
 

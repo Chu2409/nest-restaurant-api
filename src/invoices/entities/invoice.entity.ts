@@ -22,6 +22,7 @@ export class Invoice {
   @Column({
     name: 'total',
     type: 'float4',
+    default: 0,
   })
   total: number;
 
@@ -43,23 +44,28 @@ export class Invoice {
 
   @ManyToOne(() => Employee, (employee) => employee.invoices, {
     nullable: false,
+    eager: true,
   })
   @JoinColumn({
     name: 'employee_id',
   })
   employee: Employee;
 
-  @OneToOne(() => Visit, (visit) => visit.invoice, { nullable: false })
+  @OneToOne(() => Visit, (visit) => visit.invoice, {
+    nullable: false,
+    eager: true,
+  })
   @JoinColumn({
     name: 'visit_id',
   })
   visit: Visit;
 
   @ManyToOne(() => Customer, (customer) => customer.invoices, {
-    nullable: true,
+    nullable: false,
+    eager: true,
   })
   @JoinColumn({
     name: 'customer_id',
   })
-  customer?: Customer;
+  customer: Customer;
 }

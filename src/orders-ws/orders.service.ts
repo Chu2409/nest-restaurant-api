@@ -199,4 +199,13 @@ export class OrdersService {
     );
     //.getRawMany()) as { visitId: number }[];
   }
+
+  async getOrdersByVisitId(visitId: number) {
+    const qb = this.ordersRepository.createQueryBuilder('order');
+    return await qb
+      .leftJoinAndSelect('order.product', 'product')
+      .innerJoin('order.masterOrder', 'masterOrder')
+      .where('masterOrder.visit = :visitId', { visitId })
+      .getMany();
+  }
 }

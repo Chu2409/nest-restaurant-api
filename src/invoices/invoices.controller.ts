@@ -3,40 +3,40 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { InvoicesService } from './invoices.service';
-import { CreateInvoiceDto } from './dto/create-invoice.dto';
-import { UpdateInvoiceDto } from './dto/update-invoice.dto';
+import { PayInvoiceDto } from './dto/pay-invoice.dto';
 
 @Controller('invoices')
 export class InvoicesController {
   constructor(private readonly invoicesService: InvoicesService) {}
 
-  @Post()
-  create(@Body() createInvoiceDto: CreateInvoiceDto) {
-    return this.invoicesService.create(createInvoiceDto);
+  @Get('complete-pay-by-card')
+  async complete(@Query('invoiceId', ParseIntPipe) invoiceId: number) {
+    return this.invoicesService.completePayByCard(invoiceId);
   }
 
   @Get()
-  findAll() {
-    return this.invoicesService.findAll();
+  async findAll() {
+    return await this.invoicesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.invoicesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateInvoiceDto: UpdateInvoiceDto) {
-    return this.invoicesService.update(+id, updateInvoiceDto);
+  async findOne(@Param('id') id: number) {
+    return await this.invoicesService.findOne(id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.invoicesService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.invoicesService.remove(+id);
+  }
+
+  @Post('pay')
+  async pay(@Body() payInvoiceDto: PayInvoiceDto) {
+    return await this.invoicesService.pay(payInvoiceDto);
   }
 }
