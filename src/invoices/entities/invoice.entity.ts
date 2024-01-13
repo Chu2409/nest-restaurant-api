@@ -1,7 +1,3 @@
-import { PAYMENT_METHOD_ENUM } from '../../common/enums/payment-method.enum';
-import { INVOICE_STATE_ENUM } from '../../common/enums/invoice-state.enum';
-import { Employee } from '../../employees/entities/employee.entity';
-import { Visit } from '../../visits-ws/entities/visit.entity';
 import {
   Column,
   Entity,
@@ -10,7 +6,11 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Customer } from 'src/customers/entities/customer.entity';
+import { PAYMENT_METHOD_ENUM } from '../../common/enums/payment-method.enum';
+import { INVOICE_STATE_ENUM } from '../../common/enums/invoice-state.enum';
+import { Customer } from '../../customers/entities/customer.entity';
+import { Employee } from '../../employees/entities/employee.entity';
+import { Visit } from '../../visits-ws/entities/visit.entity';
 
 @Entity('invoices')
 export class Invoice {

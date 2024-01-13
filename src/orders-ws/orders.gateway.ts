@@ -11,22 +11,22 @@ import {
   // WsException,
 } from '@nestjs/websockets';
 import {
-  Server,
-  Socket,
-  //Socket
-} from 'socket.io';
-import {
   Catch,
   HttpException,
   Inject,
   UseFilters,
   forwardRef,
 } from '@nestjs/common';
+import {
+  Server,
+  Socket,
+  //Socket
+} from 'socket.io';
+import { PRODUCT_STATE_ENUM } from '../common/enums/product-state.enum';
+import { VisitsGateway } from '../visits-ws/visits.gateway';
 import { OrdersService } from './orders.service';
 // import { CreateOrderDto } from './dto/create-order.dto';
-import { VisitsGateway } from 'src/visits-ws/visits.gateway';
 import { ChangeProductOrderStatusDto } from './dto/change-product-order-status.dto';
-import { PRODUCT_STATE_ENUM } from 'src/common/enums/product-state.enum';
 // import { ChangeProductOrderStatusDto } from './dto/change-product-order-status.dto';
 
 @Catch(WsException, HttpException)

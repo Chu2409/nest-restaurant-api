@@ -1,6 +1,3 @@
-import { Invoice } from 'src/invoices/entities/invoice.entity';
-import { MasterOrder } from 'src/master-orders/entities/master-order.entity';
-import { Table } from 'src/tables-ws/entities/table.entity';
 import {
   Column,
   Entity,
@@ -10,6 +7,9 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Invoice } from '../../invoices/entities/invoice.entity';
+import { MasterOrder } from '../../master-orders/entities/master-order.entity';
+import { Table } from '../../tables-ws/entities/table.entity';
 
 @Entity('visits')
 export class Visit {

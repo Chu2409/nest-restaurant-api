@@ -5,7 +5,7 @@ import {
   IsString,
   Length,
 } from 'class-validator';
-import { PAYMENT_METHOD_ENUM } from 'src/common/enums/payment-method.enum';
+import { PAYMENT_METHOD_ENUM } from '../../common/enums/payment-method.enum';
 
 export class PayInvoiceDto {
   @IsNumber()

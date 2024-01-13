@@ -1,5 +1,5 @@
-import { Invoice } from '../../invoices/entities/invoice.entity';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { Invoice } from '../../invoices/entities/invoice.entity';
 
 @Entity('customers')
 export class Customer {

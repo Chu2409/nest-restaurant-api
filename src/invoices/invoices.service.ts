@@ -5,12 +5,12 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Invoice } from './entities/invoice.entity';
 import Stripe from 'stripe';
-import { PayInvoiceDto } from './dto/pay-invoice.dto';
+import { INVOICE_STATE_ENUM } from '../common/enums/invoice-state.enum';
+import { Invoice } from './entities/invoice.entity';
+import { Order } from '../orders-ws/entities/order.entity';
 import { OrdersService } from '../orders-ws/orders.service';
-import { Order } from 'src/orders-ws/entities/order.entity';
-import { INVOICE_STATE_ENUM } from 'src/common/enums/invoice-state.enum';
+import { PayInvoiceDto } from './dto/pay-invoice.dto';
 
 @Injectable()
 export class InvoicesService {

@@ -5,10 +5,10 @@ import {
   WebSocketServer,
   WsException,
 } from '@nestjs/websockets';
+import { Catch, HttpException, UseFilters } from '@nestjs/common';
+import { Server } from 'socket.io';
 import { MasterOrdersService } from './master-orders.service';
 import { CreateMasterOrderDto } from './dto/create-master-order.dto';
-import { Server } from 'socket.io';
-import { Catch, HttpException, UseFilters } from '@nestjs/common';
 
 @Catch(WsException, HttpException)
 class WsAndHttpExceptionFilter {

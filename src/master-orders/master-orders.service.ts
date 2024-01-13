@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMasterOrderDto } from './dto/create-master-order.dto';
-import { DataSource, Repository } from 'typeorm';
-import { Order } from 'src/orders-ws/entities/order.entity';
-import { UnitOrder } from 'src/orders-ws/entities/unit-order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
+import { PRODUCT_STATE_ENUM } from '../common/enums/product-state.enum';
 import { MasterOrder } from './entities/master-order.entity';
-import { Visit } from 'src/visits-ws/entities/visit.entity';
-import { Product } from 'src/products/entities/product.entity';
-import { PRODUCT_STATE_ENUM } from 'src/common/enums/product-state.enum';
+import { Order } from '../orders-ws/entities/order.entity';
+import { UnitOrder } from '../orders-ws/entities/unit-order.entity';
+import { Visit } from '../visits-ws/entities/visit.entity';
+import { Product } from '../products/entities/product.entity';
+import { CreateMasterOrderDto } from './dto/create-master-order.dto';
 
 @Injectable()
 export class MasterOrdersService {

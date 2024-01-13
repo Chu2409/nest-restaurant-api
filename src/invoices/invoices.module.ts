@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { InvoicesService } from './invoices.service';
-import { InvoicesController } from './invoices.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { OrdersModule } from '../orders-ws/orders.module';
 import { Invoice } from './entities/invoice.entity';
-import { OrdersModule } from 'src/orders-ws/orders.module';
+import { InvoicesController } from './invoices.controller';
+import { InvoicesService } from './invoices.service';
 
 @Module({
   controllers: [InvoicesController],

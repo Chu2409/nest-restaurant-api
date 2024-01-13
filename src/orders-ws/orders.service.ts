@@ -3,13 +3,13 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { CreateOrderDto, UnitProductOrderDto } from './dto/create-order.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
+import { PRODUCT_STATE_ENUM } from '../common/enums/product-state.enum';
 import { Order } from './entities/order.entity';
 import { UnitOrder } from './entities/unit-order.entity';
 import { ChangeProductOrderStatusDto } from './dto/change-product-order-status.dto';
-import { PRODUCT_STATE_ENUM } from 'src/common/enums/product-state.enum';
+import { CreateOrderDto, UnitProductOrderDto } from './dto/create-order.dto';
 
 @Injectable()
 export class OrdersService {
