@@ -10,10 +10,24 @@ import {
 } from '@nestjs/common';
 import { InvoicesService } from './invoices.service';
 import { PayInvoiceDto } from './dto/pay-invoice.dto';
+import {
+  DaysTotalByMonthDto,
+  MonthsTotalByYearDto,
+} from './dto/total-report.dto';
 
 @Controller('invoices')
 export class InvoicesController {
   constructor(private readonly invoicesService: InvoicesService) {}
+
+  @Get('get-total-by-month')
+  async getDaysTotalByMonth(@Body() totalByMonthDto: DaysTotalByMonthDto) {
+    return await this.invoicesService.getDaysTotalByMonth(totalByMonthDto);
+  }
+
+  @Get('get-total-by-year')
+  async getMonthsTotalByYear(@Body() totalByYearDto: MonthsTotalByYearDto) {
+    return await this.invoicesService.getMonthsTotalByYear(totalByYearDto);
+  }
 
   @Get('complete-pay-by-card')
   async complete(@Query('invoiceId', ParseIntPipe) invoiceId: number) {
@@ -26,13 +40,13 @@ export class InvoicesController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
+  async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.invoicesService.findOne(id);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return await this.invoicesService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.invoicesService.remove(id);
   }
 
   @Post('pay')
