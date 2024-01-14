@@ -6,6 +6,7 @@ import { UnitOrder } from './entities/unit-order.entity';
 import { Order } from './entities/order.entity';
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
+import { ProductsModule } from 'src/products/products.module';
 
 @Module({
   controllers: [OrdersController],
@@ -13,6 +14,7 @@ import { OrdersService } from './orders.service';
   imports: [
     TypeOrmModule.forFeature([Order, UnitOrder]),
     forwardRef(() => VisitsModule),
+    ProductsModule,
   ],
   exports: [OrdersService],
 })
