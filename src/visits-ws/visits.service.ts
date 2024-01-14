@@ -11,6 +11,12 @@ import { Visit } from './entities/visit.entity';
 import { TablesService } from '../tables-ws/tables.service';
 import { OrdersService } from '../orders-ws/orders.service';
 import { CreateVisitDto } from './dto/create-visit.dto';
+import {
+  VisitsByMonthDto,
+  VisitsByYearDto,
+  getDaysBase,
+  getMonthsBase,
+} from './dto/visits-report.dto';
 
 @Injectable()
 export class VisitsService {
@@ -136,5 +142,53 @@ export class VisitsService {
       .leftJoinAndSelect('visit.table', 'table')
       .where('visit.id = :id', { id })
       .getOne();
+  }
+
+  async getVisitsByMonth({ month, year }: VisitsByMonthDto) {
+    const daysVisits = getDaysBase(month);
+
+    const qb = this.visitRepository.createQueryBuilder('visit');
+    const response = await qb
+      .where('visit.exit IS NOT NULL')
+      .andWhere(
+        'EXTRACT (MONTH FROM(visit.exit)) = :month AND EXTRACT(YEAR FROM (visit.exit)) = :year',
+        {
+          month,
+          year,
+        },
+      )
+      .select('EXTRACT(DAY FROM visit.exit) :: SMALLINT', 'day')
+      .addSelect('COUNT(visit.id) :: SMALLINT', 'visits')
+      .groupBy('day')
+      .orderBy('day')
+      .getRawMany();
+
+    response.forEach((total) => {
+      daysVisits[total.day] = total.visits;
+    });
+
+    return daysVisits;
+  }
+
+  async getVisitsByYear({ year }: VisitsByYearDto) {
+    const monthsVisits = getMonthsBase();
+
+    const qb = this.visitRepository.createQueryBuilder('visit');
+    const response = await qb
+      .where('visit.exit IS NOT NULL')
+      .andWhere('EXTRACT(YEAR FROM (visit.exit)) = :year', {
+        year,
+      })
+      .select('EXTRACT(MONTH FROM visit.exit) :: SMALLINT', 'month')
+      .addSelect('COUNT(visit.id) :: SMALLINT', 'visits')
+      .groupBy('month')
+      .orderBy('month')
+      .getRawMany();
+
+    response.forEach((total) => {
+      monthsVisits[total.month] = total.visits;
+    });
+
+    return monthsVisits;
   }
 }

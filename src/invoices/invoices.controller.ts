@@ -19,12 +19,12 @@ import {
 export class InvoicesController {
   constructor(private readonly invoicesService: InvoicesService) {}
 
-  @Get('get-total-by-month')
+  @Post('get-total-by-month')
   async getDaysTotalByMonth(@Body() totalByMonthDto: DaysTotalByMonthDto) {
     return await this.invoicesService.getDaysTotalByMonth(totalByMonthDto);
   }
 
-  @Get('get-total-by-year')
+  @Post('get-total-by-year')
   async getMonthsTotalByYear(@Body() totalByYearDto: MonthsTotalByYearDto) {
     return await this.invoicesService.getMonthsTotalByYear(totalByYearDto);
   }

@@ -130,7 +130,8 @@ export class InvoicesService {
     const qb = this.invoicesRepository.createQueryBuilder('invoice');
     const totalByDay = await qb
       .innerJoin('invoice.visit', 'visit')
-      .where(
+      .where("invoice.state = 'CANCELADO'")
+      .andWhere(
         'EXTRACT (MONTH FROM(visit.exit)) = :month AND EXTRACT(YEAR FROM (visit.exit)) = :year',
         {
           month,
@@ -158,7 +159,8 @@ export class InvoicesService {
     const qb = this.invoicesRepository.createQueryBuilder('invoice');
     const totalByMonth = await qb
       .innerJoin('invoice.visit', 'visit')
-      .where('EXTRACT(YEAR FROM (visit.exit)) = :year', {
+      .where("invoice.state = 'CANCELADO'")
+      .andWhere('EXTRACT(YEAR FROM (visit.exit)) = :year', {
         year,
       })
       .select('EXTRACT(MONTH FROM visit.exit) :: SMALLINT', 'month')
