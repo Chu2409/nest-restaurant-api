@@ -10,6 +10,13 @@ import { Order } from './entities/order.entity';
 import { UnitOrder } from './entities/unit-order.entity';
 import { ChangeProductOrderStatusDto } from './dto/change-product-order-status.dto';
 import { CreateOrderDto, UnitProductOrderDto } from './dto/create-order.dto';
+import {
+  ProductsCountByMonthDto,
+  ProductsCountByYearDto,
+  ProductsCountResponse,
+  getProductsBase,
+} from './dto/products-count-report.dto';
+import { Product } from '../products/entities/product.entity';
 
 @Injectable()
 export class OrdersService {
@@ -19,6 +26,9 @@ export class OrdersService {
 
     @InjectRepository(UnitOrder)
     private readonly unitOrdersRepository: Repository<UnitOrder>,
+
+    @InjectRepository(Product)
+    private readonly productsRepository: Repository<Product>,
 
     private readonly dataSource: DataSource,
   ) {}
@@ -150,13 +160,6 @@ export class OrdersService {
   //   return `This action removes a #${id} order`;
   // }
 
-  private handleExceptions(error: any) {
-    if (error.code === '23503') throw new BadRequestException(error.detail);
-
-    // console.log(error);
-    throw new InternalServerErrorException('Unexpected error creating product');
-  }
-
   private getUnitProducts(createOrderDto: CreateOrderDto) {
     const { products } = createOrderDto;
     const unitOrders: UnitProductOrderDto[] = [];
@@ -207,5 +210,69 @@ export class OrdersService {
       .innerJoin('order.masterOrder', 'masterOrder')
       .where('masterOrder.visit = :visitId', { visitId })
       .getMany();
+  }
+
+  async getProductsCountByMonth({ month, year }: ProductsCountByMonthDto) {
+    const products = await this.productsRepository.find();
+    const productsCount: ProductsCountResponse = getProductsBase(products);
+
+    const qb = this.ordersRepository.createQueryBuilder('order');
+    const productsCountByMonth = await qb
+      .innerJoin('order.product', 'product')
+      .select('product.name', 'productName')
+      .addSelect('SUM(order.quantity) :: SMALLINT', 'productCount')
+      .where(
+        'EXTRACT(MONTH FROM (order.queuedAt)) = :month AND EXTRACT(YEAR FROM (order.queuedAt)) = :year',
+        { month, year },
+      )
+      .groupBy('product.name')
+      .getRawMany();
+
+    productsCountByMonth.forEach((product) => {
+      productsCount[product.productName] = product.productCount;
+    });
+
+    const sortedProductsCount: ProductsCountResponse = {};
+    Object.keys(productsCount)
+      .sort((a, b) => productsCount[b] - productsCount[a])
+      .forEach((key) => {
+        sortedProductsCount[key] = productsCount[key];
+      });
+
+    return sortedProductsCount;
+  }
+
+  async getProductsCountByYear({ year }: ProductsCountByYearDto) {
+    const products = await this.productsRepository.find();
+    const productsCount: ProductsCountResponse = getProductsBase(products);
+
+    const qb = this.ordersRepository.createQueryBuilder('order');
+    const productsCountByYear = await qb
+      .innerJoin('order.product', 'product')
+      .select('product.name', 'productName')
+      .addSelect('SUM(order.quantity) :: SMALLINT', 'productCount')
+      .where('EXTRACT(YEAR FROM (order.queuedAt)) = :year', { year })
+      .groupBy('product.name')
+      .getRawMany();
+
+    productsCountByYear.forEach((product) => {
+      productsCount[product.productName] = product.productCount;
+    });
+
+    const sortedProductsCount: ProductsCountResponse = {};
+    Object.keys(productsCount)
+      .sort((a, b) => productsCount[b] - productsCount[a])
+      .forEach((key) => {
+        sortedProductsCount[key] = productsCount[key];
+      });
+
+    return sortedProductsCount;
+  }
+
+  private handleExceptions(error: any) {
+    if (error.code === '23503') throw new BadRequestException(error.detail);
+
+    // console.log(error);
+    throw new InternalServerErrorException('Unexpected error creating product');
   }
 }

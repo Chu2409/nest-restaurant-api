@@ -11,6 +11,13 @@ import { Invoice } from './entities/invoice.entity';
 import { Order } from '../orders-ws/entities/order.entity';
 import { OrdersService } from '../orders-ws/orders.service';
 import { PayInvoiceDto } from './dto/pay-invoice.dto';
+import {
+  DaysTotalByMonthDto,
+  getMonthsBase,
+  MonthsTotalByYearDto,
+  MonthTotalByYearResponse,
+} from './dto/total-report.dto';
+import { getDaysBase, DayTotalByMonthResponse } from './dto/total-report.dto';
 
 @Injectable()
 export class InvoicesService {
@@ -112,6 +119,61 @@ export class InvoicesService {
     invoice.state = INVOICE_STATE_ENUM.CANCELADO;
 
     return await this.invoicesRepository.save(invoice);
+  }
+
+  async getDaysTotalByMonth({
+    month,
+    year,
+  }: DaysTotalByMonthDto): Promise<DayTotalByMonthResponse> {
+    const daysWithTotal: DayTotalByMonthResponse = getDaysBase(month);
+
+    const qb = this.invoicesRepository.createQueryBuilder('invoice');
+    const totalByDay = await qb
+      .innerJoin('invoice.visit', 'visit')
+      .where("invoice.state = 'CANCELADO'")
+      .andWhere(
+        'EXTRACT (MONTH FROM(visit.exit)) = :month AND EXTRACT(YEAR FROM (visit.exit)) = :year',
+        {
+          month,
+          year,
+        },
+      )
+      .select('EXTRACT(DAY FROM visit.exit) :: SMALLINT', 'day')
+      .addSelect('SUM(invoice.total)', 'total')
+      .groupBy('day')
+      .orderBy('day')
+      .getRawMany();
+
+    totalByDay.forEach((total) => {
+      daysWithTotal[total.day] = total.total;
+    });
+
+    return daysWithTotal;
+  }
+
+  async getMonthsTotalByYear({
+    year,
+  }: MonthsTotalByYearDto): Promise<MonthTotalByYearResponse> {
+    const monthsWithTotal: MonthTotalByYearResponse = getMonthsBase();
+
+    const qb = this.invoicesRepository.createQueryBuilder('invoice');
+    const totalByMonth = await qb
+      .innerJoin('invoice.visit', 'visit')
+      .where("invoice.state = 'CANCELADO'")
+      .andWhere('EXTRACT(YEAR FROM (visit.exit)) = :year', {
+        year,
+      })
+      .select('EXTRACT(MONTH FROM visit.exit) :: SMALLINT', 'month')
+      .addSelect('SUM(invoice.total)', 'total')
+      .groupBy('month')
+      .orderBy('month')
+      .getRawMany();
+
+    totalByMonth.forEach((total) => {
+      monthsWithTotal[total.month] = total.total;
+    });
+
+    return monthsWithTotal;
   }
 
   private handleDBExceptions(error: any) {
