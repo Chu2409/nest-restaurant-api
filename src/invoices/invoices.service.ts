@@ -46,6 +46,9 @@ export class InvoicesService {
       payInvoiceDto.visitId,
     );
 
+    if (!orders || orders.length === 0)
+      throw new BadRequestException('No orders found');
+
     const total = orders.reduce(
       (acc, order) => acc + order.quantity * order.product.price,
       0,
