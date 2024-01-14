@@ -1,5 +1,13 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import { VisitsService } from './visits.service';
+import { VisitsByMonthDto, VisitsByYearDto } from './dto/visits-report.dto';
 
 @Controller('visits')
 export class VisitsController {
@@ -23,5 +31,15 @@ export class VisitsController {
   @Get('master-orders')
   async findWithUnitOrders() {
     return await this.visitsService.findWithMasterOrders();
+  }
+
+  @Post('get-visits-by-month')
+  async getVisitsByMonth(@Body() visitsByMonthDto: VisitsByMonthDto) {
+    return await this.visitsService.getVisitsByMonth(visitsByMonthDto);
+  }
+
+  @Post('get-visits-by-year')
+  async getVisitsByYear(@Body() visitsByYearDto: VisitsByYearDto) {
+    return await this.visitsService.getVisitsByYear(visitsByYearDto);
   }
 }

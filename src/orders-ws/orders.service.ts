@@ -16,7 +16,7 @@ import {
   ProductsCountResponse,
   getProductsBase,
 } from './dto/products-count-report.dto';
-import { Product } from 'src/products/entities/product.entity';
+import { Product } from '../products/entities/product.entity';
 
 @Injectable()
 export class OrdersService {
