@@ -3,8 +3,8 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { TablesService } from './tables.service';
 import { Server } from 'socket.io';
+import { TablesService } from './tables.service';
 
 @WebSocketGateway({ cors: true })
 export class TablesGateway {

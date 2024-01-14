@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
-import { MasterOrdersService } from './master-orders.service';
-import { MasterOrdersGateway } from './master-orders.gateway';
-import { OrdersModule } from 'src/orders-ws/orders.module';
-import { VisitsModule } from 'src/visits-ws/visits.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Order } from 'src/orders-ws/entities/order.entity';
-import { UnitOrder } from 'src/orders-ws/entities/unit-order.entity';
-import { Visit } from 'src/visits-ws/entities/visit.entity';
+import { OrdersModule } from '../orders-ws/orders.module';
+import { VisitsModule } from '../visits-ws/visits.module';
+import { MasterOrdersGateway } from './master-orders.gateway';
+import { Order } from '../orders-ws/entities/order.entity';
+import { UnitOrder } from '../orders-ws/entities/unit-order.entity';
+import { Visit } from '../visits-ws/entities/visit.entity';
 import { MasterOrder } from './entities/master-order.entity';
-import { Product } from 'src/products/entities/product.entity';
+import { Product } from '../products/entities/product.entity';
+import { MasterOrdersService } from './master-orders.service';
 
 @Module({
   providers: [MasterOrdersGateway, MasterOrdersService],

@@ -1,5 +1,5 @@
-import { Invoice } from '../../invoices/entities/invoice.entity';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { Invoice } from '../../invoices/entities/invoice.entity';
 
 @Entity('customers')
 export class Customer {
@@ -7,6 +7,7 @@ export class Customer {
     name: 'id',
     type: 'varchar',
     length: '10',
+    unique: true,
   })
   id: string;
 

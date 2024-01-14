@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Table } from './entities/table.entity';
 import { Repository } from 'typeorm';
+import { Table } from './entities/table.entity';
 
 @Injectable()
 export class TablesService {

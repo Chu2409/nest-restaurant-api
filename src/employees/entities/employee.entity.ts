@@ -1,6 +1,6 @@
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { EMPLOYEE_ROLE_ENUM } from '../../common/enums/employee-role.enum';
 import { Invoice } from '../../invoices/entities/invoice.entity';
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity('employees')
 export class Employee {
@@ -8,8 +8,9 @@ export class Employee {
     name: 'id',
     type: 'varchar',
     length: '10',
+    unique: true,
   })
-  id: number;
+  id: string;
 
   @Column({
     name: 'first_name',

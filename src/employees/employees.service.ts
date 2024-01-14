@@ -1,10 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Employee } from './entities/employee.entity';
+import { LoginEmployeeDto } from './dto/login-employee.dto';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Employee } from './entities/employee.entity';
-import { Repository } from 'typeorm';
-import { LoginEmployeeDto } from './dto/login-employee.dto';
 
 @Injectable()
 export class EmployeesService {
@@ -12,10 +17,6 @@ export class EmployeesService {
     @InjectRepository(Employee)
     private readonly employeeRepository: Repository<Employee>,
   ) {}
-
-  create(createEmployeeDto: CreateEmployeeDto) {
-    return 'This action adds a new employee';
-  }
 
   async login(loginEmployeeDto: LoginEmployeeDto) {
     const employee = await this.employeeRepository.findOne({
@@ -29,19 +30,46 @@ export class EmployeesService {
     return employee;
   }
 
-  findAll() {
-    return `This action returns all employees`;
+  async create(createEmployeeDto: CreateEmployeeDto) {
+    try {
+      const customer = this.employeeRepository.create(createEmployeeDto);
+
+      return await this.employeeRepository.save(customer);
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} employee`;
+  async findAll() {
+    return await this.employeeRepository.find();
   }
 
-  update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
-    return `This action updates a #${id} employee`;
+  async findOne(id: string) {
+    const customer = await this.employeeRepository.findOneBy({ id });
+
+    if (!customer) {
+      throw new NotFoundException('Employee not found');
+    }
+
+    return customer;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} employee`;
+  async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
+    const customer = await this.employeeRepository.preload({
+      ...updateEmployeeDto,
+      id,
+    });
+
+    if (!customer) {
+      throw new NotFoundException('Employee not found');
+    }
+
+    return await this.employeeRepository.save(customer);
+  }
+
+  async remove(id: string) {
+    const customer = await this.findOne(id);
+
+    return await this.employeeRepository.remove(customer);
   }
 }

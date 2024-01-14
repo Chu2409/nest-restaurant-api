@@ -1,3 +1,4 @@
+import { Catch, HttpException, UseFilters } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -7,10 +8,9 @@ import {
   WsException,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { Catch, HttpException, UseFilters } from '@nestjs/common';
-import { CreateVisitDto } from './dto/create-visit.dto';
+import { TablesGateway } from '../tables-ws/tables.gateway';
 import { VisitsService } from './visits.service';
-import { TablesGateway } from 'src/tables-ws/tables.gateway';
+import { CreateVisitDto } from './dto/create-visit.dto';
 
 @Catch(WsException, HttpException)
 class WsAndHttpExceptionFilter {

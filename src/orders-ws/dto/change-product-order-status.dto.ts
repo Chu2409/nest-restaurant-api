@@ -1,5 +1,5 @@
 import { IsEnum, IsNumber, IsPositive } from 'class-validator';
-import { PRODUCT_STATE_ENUM } from 'src/common/enums/product-state.enum';
+import { PRODUCT_STATE_ENUM } from '../../common/enums/product-state.enum';
 
 export class ChangeProductOrderStatusDto {
   @IsNumber()

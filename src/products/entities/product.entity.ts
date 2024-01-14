@@ -1,5 +1,4 @@
 import { Order } from '../../orders-ws/entities/order.entity';
-import { UnitOrder } from '../../orders-ws/entities/unit-order.entity';
 import {
   Column,
   Entity,
@@ -9,6 +8,7 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 import { Category } from './catetory.entity';
+import { UnitOrder } from '../../orders-ws/entities/unit-order.entity';
 
 @Entity('products')
 export class Product {
