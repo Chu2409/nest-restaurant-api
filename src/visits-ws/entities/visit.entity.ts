@@ -39,7 +39,9 @@ export class Visit {
   })
   table: Table;
 
-  @OneToMany(() => MasterOrder, (masterOders) => masterOders.visit)
+  @OneToMany(() => MasterOrder, (masterOders) => masterOders.visit, {
+    eager: true,
+  })
   masterOrders?: MasterOrder[];
 
   @OneToOne(() => Invoice, (invoice) => invoice.visit, { nullable: true })
