@@ -24,6 +24,7 @@ export class Order {
   quantity: number;
 
   @ManyToOne(() => Product, (product) => product.orders, {
+    eager: true,
     nullable: false,
   })
   @JoinColumn({

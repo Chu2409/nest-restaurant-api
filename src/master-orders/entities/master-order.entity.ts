@@ -16,7 +16,9 @@ export class MasterOrder {
   })
   id: number;
 
-  @ManyToOne(() => Visit, (visit) => visit.masterOrders, { nullable: false })
+  @ManyToOne(() => Visit, (visit) => visit.masterOrders, {
+    nullable: false,
+  })
   @JoinColumn({
     name: 'visit_id',
   })
@@ -29,6 +31,6 @@ export class MasterOrder {
   })
   createdAt: Date;
 
-  @OneToMany(() => Order, (order) => order.masterOrder)
+  @OneToMany(() => Order, (order) => order.masterOrder, { eager: true })
   orders?: Order[];
 }
